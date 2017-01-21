@@ -109,24 +109,27 @@ public class Boid : MonoBehaviour
 
     void Update()
     {
-        EvaluateBoops();
-
-        if (BoidVisual)
+        if(EvaluateBoops());
             BoidVisual.transform.localScale = Vector3.one * (1 + totalValue);
     }
 
-    void EvaluateBoops()
+    bool EvaluateBoops()
     {
-        totalValue = 0f;
-
-        for (int i = activeBoops.Count - 1; i >= 0; i--)
+        if (activeBoops.Count > 0)
         {
-            bool stillActive = activeBoops[i].Evaluate();
-            totalValue += activeBoops[i].CurrentValue;
+            totalValue = 0f;
 
-            if (!stillActive)
-                activeBoops.RemoveAt(i);
+            for (int i = activeBoops.Count - 1; i >= 0; i--)
+            {
+                bool stillActive = activeBoops[i].Evaluate();
+                totalValue += activeBoops[i].CurrentValue;
+
+                if (!stillActive)
+                    activeBoops.RemoveAt(i);
+            }
+            return true;
         }
+        return false;
     }
 
     public void SpreadInfection(BoopData data)
