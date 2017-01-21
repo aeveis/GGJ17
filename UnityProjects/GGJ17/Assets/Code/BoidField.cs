@@ -53,7 +53,7 @@ public class BoidField : MonoBehaviour {
 	}
 
 	void cluster(){
-		DistanceBetweenBoids = .5f;
+		DistanceBetweenBoids = .38f;
 		for (var i = - ScreenWidth/2; i < ScreenWidth/2; i += DistanceBetweenBoids) 
 		{
 			for (var ii = - ScreenHeight/2; ii < ScreenHeight / 2; ii += DistanceBetweenBoids) 
