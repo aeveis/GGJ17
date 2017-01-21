@@ -27,13 +27,15 @@ public class BoopData
     bool decaying = false;
     bool pingedTreasure = false;
     float timeSinceTreasure = 0f;
+    float boopLifeTime = 0f;
 
     public float CurrentValue { get { return currentValue; } }
     public float CurrentTime { get { return currentEvaluation; } }
     public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
     public float TimeSinceTreasure { get { return timeSinceTreasure; } }
+    public float BoopAge { get { return boopLifeTime; } }
 
-    public BoopData(BoopData data, bool generateNewID)
+    public BoopData (BoopData data, bool generateNewID)
     {
         if (!generateNewID)
             BoopID = data.BoopID;
@@ -58,6 +60,8 @@ public class BoopData
     //Evaluates this boid. Returns false if the Boid should be removed.
     public bool Evaluate()
     {
+        boopLifeTime += Time.deltaTime;
+
         if (pingedTreasure)
             timeSinceTreasure += Time.deltaTime;
         if (currentEvaluation < 1f)
@@ -91,6 +95,11 @@ public class UnityVector2Event : UnityEvent<Vector2>
 {
 }
 
+[System.Serializable]
+public class UnityBoopEvent : UnityEvent<BoopData>
+{
+}
+
 public class Boid : MonoBehaviour 
 {  
     //Active Boids can spread and receive infections. Reactive boids can receive infections but not spread them, Dead boids can't do anything.
@@ -106,7 +115,7 @@ public class Boid : MonoBehaviour
     [SerializeField]
     public BoopData DefaultBoop;
 
-    public UnityVector2Event OnInfected;
+    public UnityBoopEvent OnInfected;
 
     //Private Variables
     List<Boid> neighbors = new List<Boid>();
@@ -194,9 +203,8 @@ public class Boid : MonoBehaviour
             newInfection.GenerationalDecay += data.AdditiveDecay;
             newInfection.ParentBoid = this;
             activeBoops.Add(newInfection);
-
-			Vector2 pos = new Vector2 (transform.position.x, transform.position.y);
-            OnInfected.Invoke(pos);
+			
+            OnInfected.Invoke(newInfection);
 
             if(IsTreasure)
                 BoidManager.current.TreasurePinged(data.BoopID);

@@ -9,6 +9,7 @@ public class Sub : MonoBehaviour {
 	public float ForceMult = 1f;
 	public float MaxDistance = 5f;
 	public AnimationCurve ForceFalloff;
+    public float MaxWaveAge = 2f;
 
 	Rigidbody2D subBody;
 	List<Boid> neighbors = new List<Boid>();
@@ -18,10 +19,16 @@ public class Sub : MonoBehaviour {
 		subBody = GetComponent<Rigidbody2D> ();
 	}
 
-	void ApplyForceToMeFrom (Vector2 sourcePos)
+    void ApplyForceToMeFrom (BoopData data)
 	{
+        Vector2 sourcePos = new Vector2(data.ParentBoid.transform.position.x, data.ParentBoid.transform.position.y);
+
 		float distance = Vector2.Distance (sourcePos, subBody.position);
-		float forceMag = ForceFalloff.Evaluate (distance / MaxDistance) * ForceMult;
+        float forceMag = ForceFalloff.Evaluate(distance / MaxDistance) * ForceMult;
+
+        float additionalForce = Mathf.Clamp(MaxWaveAge - data.BoopAge, 0f, Mathf.Infinity);
+
+        forceMag *= additionalForce;
 
 		Vector2 direction = subBody.position - sourcePos;
 		direction = direction.normalized;
