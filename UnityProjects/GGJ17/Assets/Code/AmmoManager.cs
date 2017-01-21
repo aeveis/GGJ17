@@ -38,15 +38,18 @@ public class AmmoManager : MonoBehaviour {
     {
         if(Input.GetMouseButtonUp(1))
         {
-            Debug.Log("Fire!");
-            GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
-            guessUIList.Remove(removingThisUI);
-            Destroy(removingThisUI);
-
-            guessesRemaining -= 1;
-            if (guessesRemaining == 0)
+            if(guessUIList.Count > 0)
             {
-                Debug.Log("Game over");
+                Debug.Log("Fire!");
+                GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
+                guessUIList.Remove(removingThisUI);
+                Destroy(removingThisUI);
+
+                guessesRemaining -= 1;
+                if (guessesRemaining == 0)
+                {
+                    Debug.Log("Game over");
+                }
             }
         }
     }
