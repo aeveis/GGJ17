@@ -3,46 +3,59 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[System.Serializable]
 public class BoopData
 {
+    [HideInInspector]
     public static int BoopCounter = 0;
 
+    [HideInInspector]
     public int BoopID = -1;
 
-    public float MaxValue = 1f;
-    public float Rate = 1f;
-    public float DecayRate = 1f;
+    public float InfectionPercent = 0.2f;
+    public float ValueMult = 1f;
+    public float TimeMult = 1f;
+    public AnimationCurve BoopCurve;
+
+    [HideInInspector]
     public Boid ParentBoid;
 
+    float currentEvaluation = 0f;
     float currentValue = 0f;
     bool decaying = false;
 
     public float CurrentValue { get { return currentValue; } }
 
-    public BoopData(BoopData data)
+    public BoopData(BoopData data, bool generateNewID)
     {
-        BoopID = data.BoopID;
-        MaxValue = data.MaxValue;
-        Rate = data.Rate;
-        DecayRate = data.DecayRate;
-    }
-
-    public BoopData(int id, float max, float rate, float decay)
-    {
-        BoopID = id;
-        MaxValue = max;
-        Rate = rate;
-        DecayRate = decay;
+        if (!generateNewID)
+            BoopID = data.BoopID;
+        else
+        {
+            BoopID = BoopCounter;
+            BoopCounter++;
+        }
+        BoopCurve = data.BoopCurve;
+        ValueMult = data.ValueMult;
+        TimeMult = data.TimeMult;
+        InfectionPercent = data.InfectionPercent;
     }
 
     //Evaluates this boid. Returns false if the Boid should be removed.
     public bool Evaluate()
     {
-        if (!decaying)
+        if (currentEvaluation < 1f)
         {
-            if (currentValue < MaxValue)
-                currentValue += Time.deltaTime * Rate;
+            if (TimeMult > 0)
+                currentEvaluation += Time.deltaTime / TimeMult;
             else
+                currentEvaluation = 1f;
+
+            //Evaluate the Curve
+            currentValue = BoopCurve.Evaluate(currentEvaluation) * ValueMult;
+
+            //If we're at the Infection percent through the curve (on a scale from 0 to 1) and we're not already decaying, then spread the infection and start to decay.
+            if (decaying == false && currentEvaluation >= InfectionPercent)
             {
                 decaying = true;
                 ParentBoid.SpreadInfection(this);
@@ -50,9 +63,7 @@ public class BoopData
         }
         else
         {
-            if (currentValue > 0)
-                currentValue -= Time.deltaTime * Rate;
-            else
+            currentValue = 0f;
                 return false;
         }
         return true;
@@ -66,8 +77,12 @@ public class Boid : MonoBehaviour
     public float GizmoRadius = 1f;
     public Color GizmoColor = Color.red;
 
+    public bool RandomizeRotation = false;
     public Transform BoidVisual;
-    public float PingDecay = 0.1f;
+    public float GenerationalDecay = 0.1f;
+
+    [SerializeField]
+    public BoopData DefaultBoop;
 
     public UnityEvent OnInfected;
 
@@ -77,6 +92,15 @@ public class Boid : MonoBehaviour
 
     float totalValue = 0f;
     public float Value { get { return totalValue; } }
+
+    void Start()
+    {
+        if (RandomizeRotation)
+        {
+            float randomRot = Random.Range(0f, 360f);
+            BoidVisual.Rotate(0f, 0f, randomRot);
+        }
+    }
 
     void Update()
     {
@@ -93,7 +117,7 @@ public class Boid : MonoBehaviour
         for (int i = activeBoops.Count - 1; i >= 0; i--)
         {
             bool stillActive = activeBoops[i].Evaluate();
-            totalValue += Mathf.Clamp(activeBoops[i].CurrentValue, 0f, Mathf.Infinity);
+            totalValue += activeBoops[i].CurrentValue;
 
             if (!stillActive)
                 activeBoops.RemoveAt(i);
@@ -110,10 +134,10 @@ public class Boid : MonoBehaviour
 
     public void Infect(BoopData data)
     {
-        if (ContainsBoop(data.BoopID) == false)
+        if (ContainsBoop(data.BoopID) == false && data.ValueMult - GenerationalDecay > 0f)
         {
-            BoopData newInfection = new BoopData(data);
-            newInfection.MaxValue -= PingDecay;
+            BoopData newInfection = new BoopData(data, false);
+            newInfection.ValueMult -= GenerationalDecay;
             newInfection.ParentBoid = this;
             activeBoops.Add(newInfection);
             OnInfected.Invoke();
@@ -133,10 +157,8 @@ public class Boid : MonoBehaviour
     [ContextMenu("Create Boop")]
     public void TestBoop()
     {
-        BoopData newInfection = new BoopData(BoopData.BoopCounter, 1f, 2f, 1.5f);
+        BoopData newInfection = new BoopData(DefaultBoop, true);
         newInfection.ParentBoid = this;
-        BoopData.BoopCounter += 1;
-
         activeBoops.Add(newInfection);
     }
 
