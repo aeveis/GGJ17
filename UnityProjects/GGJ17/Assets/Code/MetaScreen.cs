@@ -6,6 +6,7 @@ public class MetaScreen : MonoBehaviour {
     [Header("Level Info")]
     public int currentLevel;
     public int lastUnlockedLevel;
+    public bool currentLevelComplete = false;
 
     [Header("Pause Handler")]
     public GameObject PauseScreen;
