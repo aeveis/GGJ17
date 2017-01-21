@@ -86,6 +86,11 @@ public class BoopData
     }
 }
 
+[System.Serializable]
+public class UnityVector2Event : UnityEvent<Vector2>
+{
+}
+
 public class Boid : MonoBehaviour 
 {  
     //Active Boids can spread and receive infections. Reactive boids can receive infections but not spread them, Dead boids can't do anything.
@@ -101,7 +106,7 @@ public class Boid : MonoBehaviour
     [SerializeField]
     public BoopData DefaultBoop;
 
-    public UnityEvent OnInfected;
+    public UnityVector2Event OnInfected;
 
     //Private Variables
     List<Boid> neighbors = new List<Boid>();
@@ -189,7 +194,9 @@ public class Boid : MonoBehaviour
             newInfection.GenerationalDecay += data.AdditiveDecay;
             newInfection.ParentBoid = this;
             activeBoops.Add(newInfection);
-            OnInfected.Invoke();
+
+			Vector2 pos = new Vector2 (transform.position.x, transform.position.y);
+            OnInfected.Invoke(pos);
 
             if(IsTreasure)
                 BoidManager.current.TreasurePinged(data.BoopID);

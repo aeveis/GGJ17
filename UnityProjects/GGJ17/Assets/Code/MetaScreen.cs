@@ -27,9 +27,17 @@ public class MetaScreen : MonoBehaviour {
 
     private void NextScene()
     {
-        currentLevel++;
-        SceneManager.UnloadSceneAsync(allLevels[currentLevel-1]);
-        SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
+        if (currentLevel < allLevels.Count - 1)
+        {
+            currentLevel++;
+            SceneManager.UnloadSceneAsync(allLevels[currentLevel - 1]);
+            SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
+        }
+        else
+        {
+            Debug.Log("You win!");
+            //TODO: YOU WIN SCREEN
+        }
     }
 
     private void Update()

@@ -1,8 +1,10 @@
 ﻿Shader "Custom/FakeCaustics" {
 	Properties {
 		_MainTex("Base (RGB)", 2D) = "white" {}
+		_Color("Color", Color) = (0.5, 0.5, 0.5, 1)
 		_CTexture("Caustic (RGB)", 2D) = "white" {}
 		_CausticColor("Caustic Color", Color) = (0.5, 0.5, 0.5, 1)
+		_PanSpeed("PanSpeed", Range (0,10))=1
 		_DiffuseAmount ("Diffuse Amount", Range (0, 1)) = 0.5
 		_ShadowColor ("Shadow Color", Color) = (0.5, 0.5, 0.5, 1)
 		_LightColor("Light Color", Color) = (0.5, 0.5, 0.5, 1)
@@ -37,17 +39,20 @@
 		
 		struct Input {
 			float2 uv_MainTex : TEXCOORD0;
+			float2 uv_CTexture : TEXCOORD1;
 			float3 color: Color;
 		};
 
 		sampler2D _MainTex;
 		sampler2D _CTexture;
+		half4 _Color;
 		half3 _CausticColor;
+		float _PanSpeed;
 		
 		void surf (Input IN, inout SurfaceOutput o) {
-			float2 pan = IN.uv_MainTex + _Time.r;
+			float2 pan = IN.uv_CTexture + _Time.r * _PanSpeed;
 			//pan.x = pan.x + _Time.r;
-			o.Albedo = tex2D(_MainTex, IN.uv_MainTex) + tex2D(_CTexture, pan)*IN.color.rgb*_CausticColor;
+			o.Albedo = tex2D(_MainTex, IN.uv_MainTex)*_Color + tex2D(_CTexture, pan)*IN.color.rgb*_CausticColor;
 			o.Alpha = 1;
 		}
 		ENDCG
