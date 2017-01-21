@@ -84,6 +84,7 @@ public class Boid : MonoBehaviour
     public BoidType BoidState = BoidType.Active;
     public bool RandomizeRotation = false;
     public Transform BoidVisual;
+    public SpriteColorChanger BoidColor;
     public float GenerationalDecay = 0.1f;
 
     [SerializeField]
@@ -109,8 +110,11 @@ public class Boid : MonoBehaviour
 
     void Update()
     {
-        if(EvaluateBoops());
+        if (EvaluateBoops())
+        {
             BoidVisual.transform.localScale = Vector3.one * (1 + totalValue);
+            BoidColor.SetValue(totalValue);
+        }
     }
 
     bool EvaluateBoops()
