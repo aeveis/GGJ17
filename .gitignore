@@ -1,5 +1,6 @@
 UnityProjects/GGJ17/Library/*
 UnityProjects/GGJ17/Temp/*
+UnityProjects/GGJ17/.vs/*
 *.csproj
 *.sln
 UnityProjects/GGJ17/GGJ17.userprefs
