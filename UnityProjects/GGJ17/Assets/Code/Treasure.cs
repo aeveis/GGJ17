@@ -7,32 +7,31 @@ public class Treasure : MonoBehaviour
     [Header("Gizmos Parameters")]
     public float GizmoRadius = 1f;
     public Color GizmoColor = Color.red;
+    public bool GizmosOn = true;
 
     [Header("Visual Controls")]
     public GameObject TreasureVisual;
-    public bool isFound = false;
+    public bool IsFound = false;
 
     private void Start()
     {
         TreasureVisual.SetActive(false);
     }
 
-    private void OnMouseOver()
+    public void SetTreasureFound ()
     {
-        Debug.Log("Over");
-        if(Input.GetMouseButtonUp(1))
-        {
-            Debug.Log("Treasure get!");
-            isFound = true;
-            TreasureVisual.SetActive(true);
-        }
+        Debug.Log("Treasure get!");
+        IsFound = true;
+        TreasureVisual.SetActive(true);
     }
 
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = GizmoColor;
-        Gizmos.DrawSphere(transform.position, GizmoRadius);
-        
+        if(GizmosOn)
+        {
+            Gizmos.color = GizmoColor;
+            Gizmos.DrawSphere(transform.position, GizmoRadius);
+        }     
     }
 
 }

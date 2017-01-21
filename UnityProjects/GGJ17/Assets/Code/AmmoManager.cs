@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class AmmoManager : MonoBehaviour {
     [Header("UI Prefabs")]
@@ -16,6 +17,11 @@ public class AmmoManager : MonoBehaviour {
     public int boopsRemaining;
     public int guessesRemaining;
     private List<GameObject> guessUIList = new List<GameObject>();
+
+    [Header("Treasure Data")]
+    public UnityEvent onTreasureFound;
+    public LayerMask TreasureCollisionLayer;
+    public GameObject debugSphere;
 
     private void Start()
     {
@@ -36,21 +42,40 @@ public class AmmoManager : MonoBehaviour {
 
     private void Update()
     {
-        if(Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(1))
         {
             if(guessUIList.Count > 0)
             {
                 Debug.Log("Fire!");
-                GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
-                guessUIList.Remove(removingThisUI);
-                Destroy(removingThisUI);
+                RaycastHit hit;
+                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                guessesRemaining -= 1;
-                if (guessesRemaining == 0)
+                if (Physics.Raycast(ray, out hit))
                 {
-                    Debug.Log("Game over");
+                    Debug.Log(hit.collider.gameObject.name + " Target Position: " + hit.collider.gameObject.transform.position);
+                    Treasure myTreasure = hit.collider.gameObject.GetComponent<Treasure>();
+                    if (myTreasure)
+                    {
+                        myTreasure.SetTreasureFound();
+                    }
                 }
+
+                RemoveFireUIHandler();
             }
+
+        }
+    }
+
+    private void RemoveFireUIHandler()
+    {
+        GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
+        guessUIList.Remove(removingThisUI);
+        Destroy(removingThisUI);
+
+        guessesRemaining -= 1;
+        if (guessesRemaining == 0)
+        {
+            Debug.Log("Game over");
         }
     }
 
