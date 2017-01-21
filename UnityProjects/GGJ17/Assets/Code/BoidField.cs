@@ -40,7 +40,7 @@ public class BoidField : MonoBehaviour {
 	}
 		
 	void grid(){
-		DistanceBetweenBoids = .2f;
+		DistanceBetweenBoids = .3f;
 		for (var i = - ScreenWidth/2; i < ScreenWidth/2; i += DistanceBetweenBoids) 
 		{
 			for (var ii = - ScreenHeight/2; ii < ScreenHeight / 2; ii += DistanceBetweenBoids) 
