@@ -9,6 +9,7 @@ public class SpriteColorChanger : MonoBehaviour {
     public Color RedColor = Color.red;
     public AnimationCurve RedBlendWeightOverTime;
     public float ColorMult = 1f;
+    public float RedDecayMult = 1f;
 
     SpriteRenderer render;
 
@@ -25,9 +26,9 @@ public class SpriteColorChanger : MonoBehaviour {
 
     }
 
-    public void PingRed(float strength)
+    public void PingRed(float falloff)
     {
-        currentRedPercent = strength;
+        currentRedPercent += Mathf.Clamp(1 - falloff, 0f, 1f);
     }
 
     public void SetValue(float newValue)
@@ -48,7 +49,7 @@ public class SpriteColorChanger : MonoBehaviour {
 
         if (currentRedPercent > 0)
         {
-            currentRedPercent -= Time.deltaTime;
+            currentRedPercent -= Time.deltaTime * RedDecayMult;
             currentRedValue = RedBlendWeightOverTime.Evaluate(currentRedPercent);
         }
         else if (currentRedValue != 0)

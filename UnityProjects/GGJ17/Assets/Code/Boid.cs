@@ -26,11 +26,12 @@ public class BoopData
     float currentValue = 0f;
     bool decaying = false;
     bool pingedTreasure = false;
+    float timeSinceTreasure = 0f;
 
     public float CurrentValue { get { return currentValue; } }
     public float CurrentTime { get { return currentEvaluation; } }
     public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
-
+    public float TimeSinceTreasure { get { return timeSinceTreasure; } }
     public BoopData(BoopData data, bool generateNewID)
     {
         if (!generateNewID)
@@ -47,11 +48,17 @@ public class BoopData
         GenerationalDecay = data.GenerationalDecay;
         AdditiveDecay = data.AdditiveDecay;
         pingedTreasure = data.IsTreasureBoop;
+        if (data.IsTreasureBoop)
+            timeSinceTreasure = data.TimeSinceTreasure;
+        else
+            timeSinceTreasure = 0f;
     }
 
     //Evaluates this boid. Returns false if the Boid should be removed.
     public bool Evaluate()
     {
+        if (pingedTreasure)
+            timeSinceTreasure += Time.deltaTime;
         if (currentEvaluation < 1f)
         {
             if (TimeMult > 0)
@@ -114,7 +121,7 @@ public class Boid : MonoBehaviour
             float randomRot = Random.Range(0f, 360f);
             BoidVisual.Rotate(0f, 0f, randomRot);
         }
-        BoidManager.current.OnTreasurePinged.AddListener(CheckPingedTreasure);
+        BoidManager.current.OnTreasurePinged.AddListener(TreasurePinged);
     }
 
     void Update()
@@ -126,7 +133,8 @@ public class Boid : MonoBehaviour
         }
     }
 
-    void CheckPingedTreasure(int boopID)
+    //If treasure was pinged somewhere, check to see if any of our current Boops contains the ping.
+    void TreasurePinged(int boopID)
     {
         int listPos = ContainsBoop(boopID);
         if (listPos != -1)
@@ -139,8 +147,8 @@ public class Boid : MonoBehaviour
 
     void GiveRedStrengthFrom(BoopData data)
     {
-        float strength = 1 - data.CurrentTime;
-        BoidColor.PingRed(strength);
+        float falloff = data.TimeSinceTreasure + data.CurrentTime;
+        BoidColor.PingRed(falloff);
     }
 
     bool EvaluateBoops()
