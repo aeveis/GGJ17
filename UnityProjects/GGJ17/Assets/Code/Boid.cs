@@ -87,12 +87,7 @@ public class BoopData
 }
 
 public class Boid : MonoBehaviour 
-{
-    //Inspector Variables
-    [Header("Gizmos Parameters")]
-    public float GizmoRadius = 1f;
-    public Color GizmoColor = Color.red;
-   
+{  
     //Active Boids can spread and receive infections. Reactive boids can receive infections but not spread them, Dead boids can't do anything.
     public enum BoidType { Active, Reactive, Dead }
 
@@ -231,15 +226,5 @@ public class Boid : MonoBehaviour
 
         if (newNeighbor && neighbors.Contains(newNeighbor) == false)
             neighbors.Add(newNeighbor);
-    }
-
-    void OnDrawGizmosSelected()
-    {
-        Gizmos.color = GizmoColor;
-
-        for (int i = 0; i < neighbors.Count; i++)
-        {
-            Gizmos.DrawSphere(neighbors[i].transform.position, GizmoRadius);
-        }
     }
 }
