@@ -13,6 +13,8 @@ public class Treasure : MonoBehaviour
     public GameObject TreasureVisual;
     public bool IsFound = false;
 
+    public Boid closestBoid;
+
     private void Start()
     {
         TreasureVisual.SetActive(false);

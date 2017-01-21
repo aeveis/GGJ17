@@ -6,11 +6,19 @@ public class BoidRemover : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        other.gameObject.SetActive(false);
+        BoidWrapper boidWrapper = other.gameObject.GetComponent<BoidWrapper>();
+        if(boidWrapper)
+        {
+            boidWrapper.boidInfo.gameObject.SetActive(false);
+        }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        other.gameObject.SetActive(true);
+        BoidWrapper boidWrapper = other.gameObject.GetComponent<BoidWrapper>();
+        if (boidWrapper)
+        {
+            boidWrapper.boidInfo.gameObject.SetActive(true);
+        }
     }
 }
