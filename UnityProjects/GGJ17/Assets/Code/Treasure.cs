@@ -13,11 +13,29 @@ public class Treasure : MonoBehaviour
     public GameObject TreasureVisual;
     public bool IsFound = false;
 
+    public BoidFinder boidFinder;
     public Boid closestBoid;
 
     private void Start()
     {
         TreasureVisual.SetActive(false);
+        boidFinder = GetComponentInChildren<BoidFinder>();
+        if(!boidFinder)
+        {
+            Debug.Log("Uh oh. Treasure not set.");
+        }
+    }
+
+    private void Update()
+    {
+        if(!closestBoid)
+        {
+            closestBoid = boidFinder.GetClosestBoid();
+        }
+        else
+        {
+            Debug.Log("Still no boid.");
+        }
     }
 
     public void SetTreasureFound ()
