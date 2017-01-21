@@ -76,7 +76,12 @@ public class Boid : MonoBehaviour
     [Header("Gizmos Parameters")]
     public float GizmoRadius = 1f;
     public Color GizmoColor = Color.red;
+   
+    //Active Boids can spread and receive infections. Reactive boids can receive infections but not spread them, Dead boids can't do anything.
+    public enum BoidType { Active, Reactive, Dead }
 
+    [Header("Boid Stats")]
+    public BoidType BoidState = BoidType.Active;
     public bool RandomizeRotation = false;
     public Transform BoidVisual;
     public float GenerationalDecay = 0.1f;
@@ -126,14 +131,20 @@ public class Boid : MonoBehaviour
 
     public void SpreadInfection(BoopData data)
     {
-        for (int i = 0; i < neighbors.Count; i++)
+        if (BoidState == BoidType.Active)
         {
-            neighbors[i].Infect(data);
+            for (int i = 0; i < neighbors.Count; i++)
+            {
+                neighbors[i].Infect(data);
+            }
         }
     }
 
     public void Infect(BoopData data)
     {
+        if (BoidState == BoidType.Dead)
+            return;
+        
         if (ContainsBoop(data.BoopID) == false && data.ValueMult - GenerationalDecay > 0f)
         {
             BoopData newInfection = new BoopData(data, false);
@@ -157,6 +168,9 @@ public class Boid : MonoBehaviour
     [ContextMenu("Create Boop")]
     public void TestBoop()
     {
+        if (BoidState == BoidType.Dead)
+            return;
+        
         BoopData newInfection = new BoopData(DefaultBoop, true);
         newInfection.ParentBoid = this;
         activeBoops.Add(newInfection);
