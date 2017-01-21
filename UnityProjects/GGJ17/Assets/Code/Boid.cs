@@ -27,13 +27,12 @@ public class BoopData
     bool decaying = false;
     bool pingedTreasure = false;
     float timeSinceTreasure = 0f;
-    float redValue = 0f;
 
     public float CurrentValue { get { return currentValue; } }
     public float CurrentTime { get { return currentEvaluation; } }
     public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
     public float TimeSinceTreasure { get { return timeSinceTreasure; } }
-    public float RedValue { get { return redValue; } }
+
     public BoopData(BoopData data, bool generateNewID)
     {
         if (!generateNewID)
