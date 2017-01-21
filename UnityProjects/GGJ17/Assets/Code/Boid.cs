@@ -15,6 +15,8 @@ public class BoopData
     public float InfectionPercent = 0.2f;
     public float ValueMult = 1f;
     public float TimeMult = 1f;
+    public float GenerationalDecay = 0.1f;
+    public float AdditiveDecay = 0.001f;
     public AnimationCurve BoopCurve;
 
     [HideInInspector]
@@ -23,8 +25,11 @@ public class BoopData
     float currentEvaluation = 0f;
     float currentValue = 0f;
     bool decaying = false;
+    bool pingedTreasure = false;
 
     public float CurrentValue { get { return currentValue; } }
+    public float CurrentTime { get { return currentEvaluation; } }
+    public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
 
     public BoopData(BoopData data, bool generateNewID)
     {
@@ -39,6 +44,9 @@ public class BoopData
         ValueMult = data.ValueMult;
         TimeMult = data.TimeMult;
         InfectionPercent = data.InfectionPercent;
+        GenerationalDecay = data.GenerationalDecay;
+        AdditiveDecay = data.AdditiveDecay;
+        pingedTreasure = data.IsTreasureBoop;
     }
 
     //Evaluates this boid. Returns false if the Boid should be removed.
@@ -82,10 +90,10 @@ public class Boid : MonoBehaviour
 
     [Header("Boid Stats")]
     public BoidType BoidState = BoidType.Active;
+    public bool IsTreasure = false;
     public bool RandomizeRotation = false;
     public Transform BoidVisual;
     public SpriteColorChanger BoidColor;
-    public float GenerationalDecay = 0.1f;
 
     [SerializeField]
     public BoopData DefaultBoop;
@@ -106,6 +114,7 @@ public class Boid : MonoBehaviour
             float randomRot = Random.Range(0f, 360f);
             BoidVisual.Rotate(0f, 0f, randomRot);
         }
+        BoidManager.current.OnTreasurePinged.AddListener(CheckPingedTreasure);
     }
 
     void Update()
@@ -115,6 +124,23 @@ public class Boid : MonoBehaviour
             BoidVisual.transform.localScale = Vector3.one * (1 + totalValue);
             BoidColor.SetValue(totalValue);
         }
+    }
+
+    void CheckPingedTreasure(int boopID)
+    {
+        int listPos = ContainsBoop(boopID);
+        if (listPos != -1)
+        {
+            activeBoops[listPos].IsTreasureBoop = true;
+
+            GiveRedStrengthFrom(activeBoops[listPos]);
+        }
+    }
+
+    void GiveRedStrengthFrom(BoopData data)
+    {
+        float strength = 1 - data.CurrentTime;
+        BoidColor.PingRed(strength);
     }
 
     bool EvaluateBoops()
@@ -152,24 +178,31 @@ public class Boid : MonoBehaviour
         if (BoidState == BoidType.Dead)
             return;
         
-        if (ContainsBoop(data.BoopID) == false && data.ValueMult - GenerationalDecay > 0f)
+        if (ContainsBoop(data.BoopID) == -1 && data.ValueMult - data.GenerationalDecay > 0f)
         {
             BoopData newInfection = new BoopData(data, false);
-            newInfection.ValueMult -= GenerationalDecay;
+            newInfection.ValueMult -= data.GenerationalDecay;
+            newInfection.GenerationalDecay += data.AdditiveDecay;
             newInfection.ParentBoid = this;
             activeBoops.Add(newInfection);
             OnInfected.Invoke();
+
+            if(IsTreasure)
+                BoidManager.current.TreasurePinged(data.BoopID);
+
+            if (data.IsTreasureBoop)
+                GiveRedStrengthFrom(data);
         }
     }
 
-    public bool ContainsBoop(int boopID)
+    public int ContainsBoop(int boopID)
     {
         for (int i = 0; i < activeBoops.Count; i++)
         {
             if (activeBoops[i].BoopID == boopID)
-                return true;
+                return i;
         }
-        return false;
+        return -1;
     }
 
     [ContextMenu("Create Boop")]
