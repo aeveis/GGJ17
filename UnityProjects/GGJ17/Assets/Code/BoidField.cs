@@ -15,7 +15,7 @@ public class BoidField : MonoBehaviour {
 	public float ScreenWidth = 16f;
 	public float ScreenHeight = 10f;
 	public float DistanceBetweenBoids = .5f;
-	float totalBoids = 100;
+	public int totalBoids = 0;
 	public float randomSpacingThreshold = .05f;
 
 	// Use this for initialization
@@ -48,6 +48,7 @@ public class BoidField : MonoBehaviour {
 				GameObject go = Instantiate (boidPrototype);
 				go.transform.SetParent (transform);
 				go.transform.position = new Vector3 (i, ii, 0);
+				totalBoids++;
 			}
 		}
 	}
@@ -61,6 +62,7 @@ public class BoidField : MonoBehaviour {
 				GameObject go = Instantiate (boidPrototype);
 				go.transform.SetParent (transform);
 				go.transform.position = new Vector3 (i*Random.value, ii*Random.value, 0);
+				totalBoids++;
 			}
 		}
 	}
@@ -76,6 +78,7 @@ public class BoidField : MonoBehaviour {
 				GameObject go = Instantiate (boidPrototype);
 				go.transform.SetParent (transform);
 				go.transform.position = new Vector3 (i + DistanceBetweenBoids * Random.value - randomSpacingThreshold, ii + DistanceBetweenBoids * Random.value - randomSpacingThreshold, 0);
+				totalBoids++;
 			}
 		}
 	}
