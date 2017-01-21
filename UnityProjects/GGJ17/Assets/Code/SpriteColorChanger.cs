@@ -28,7 +28,7 @@ public class SpriteColorChanger : MonoBehaviour {
 
     public void PingRed(float falloff)
     {
-        currentRedPercent += Mathf.Clamp(1 - falloff, 0f, 1f);
+        currentRedPercent = Mathf.Clamp(1 - falloff, 0f, 1f);
     }
 
     public void SetValue(float newValue)
