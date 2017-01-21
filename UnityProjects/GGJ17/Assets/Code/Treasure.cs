@@ -13,9 +13,35 @@ public class Treasure : MonoBehaviour
     public GameObject TreasureVisual;
     public bool IsFound = false;
 
+    public BoidFinder boidFinder;
+    public Boid myBoid;
+
     private void Start()
     {
         TreasureVisual.SetActive(false);
+        boidFinder = GetComponentInChildren<BoidFinder>();
+    }
+
+    void FixedUpdate()
+    {
+        if (!myBoid)
+            RegisterWithBoid();
+    }
+
+    void RegisterWithBoid()
+    {
+        if (!boidFinder)
+        {
+            Debug.Log("Uh oh. No Boid Finder Configured on Treasure.");
+        }
+        else
+        {
+            myBoid = boidFinder.GetClosestBoid();
+            if (!myBoid)
+                Debug.LogWarning("WARNING: No Closest Boid Found on Treasure");
+            else
+                myBoid.IsTreasure = true;
+        }
     }
 
     public void SetTreasureFound ()
@@ -23,6 +49,7 @@ public class Treasure : MonoBehaviour
         Debug.Log("Treasure get!");
         IsFound = true;
         TreasureVisual.SetActive(true);
+        myBoid.IsTreasure = false;
     }
 
     void OnDrawGizmosSelected()

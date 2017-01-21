@@ -19,7 +19,7 @@ public class BoidField : MonoBehaviour {
 	public float randomSpacingThreshold = .05f;
 
 	// Use this for initialization
-	void Start () {
+	void Awake () {
 
 		switch (GenerationMethod) 
 		{
@@ -36,6 +36,7 @@ public class BoidField : MonoBehaviour {
 			randomGrid ();
 			break;
 		}
+
 			
 	}
 		
