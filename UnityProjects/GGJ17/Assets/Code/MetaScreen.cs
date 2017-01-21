@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MetaScreen : MonoBehaviour {
+    public static MetaScreen current;
+
     [Header("Level Info")]
     public int currentLevel;
     public int lastUnlockedLevel;
@@ -12,7 +14,13 @@ public class MetaScreen : MonoBehaviour {
 
     [Header("Pause Handler")]
     public GameObject PauseScreen;
+    public bool isPaused = false;
     private bool isInMenuOverlay = false;
+
+    private void Awake()
+    {
+        current = this;
+    }
 
     private void Start()
     {
@@ -29,9 +37,11 @@ public class MetaScreen : MonoBehaviour {
     {
         if (currentLevel < allLevels.Count - 1)
         {
+            isPaused = true;
             currentLevel++;
             SceneManager.UnloadSceneAsync(allLevels[currentLevel - 1]);
             SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
+            isPaused = false;
         }
         else
         {

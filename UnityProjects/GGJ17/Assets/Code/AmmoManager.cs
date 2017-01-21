@@ -42,7 +42,7 @@ public class AmmoManager : MonoBehaviour {
 
     private void Update()
     {
-        if (Input.GetMouseButtonUp(1))
+        if (Input.GetMouseButtonUp(1) && !(MetaScreen.current.isPaused))
         {
             if(guessUIList.Count > 0)
             {
