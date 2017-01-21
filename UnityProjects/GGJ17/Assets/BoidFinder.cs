@@ -9,7 +9,7 @@ public class BoidFinder : MonoBehaviour
 
     public Boid GetClosestBoid()
     {
-        
+        Debug.Log("Getting Closest boid with " + nearbyBoids.Count + "nearby boids.");
         Boid bestBoid = null;
         float bestDistance = -1f;
 
@@ -33,6 +33,7 @@ public class BoidFinder : MonoBehaviour
                 bestBoid = nearbyBoids[i];
             }
         }
+        Debug.Log("Returning " + bestBoid.gameObject.name + " as closest Boid.");
         return bestBoid;
     }
 
