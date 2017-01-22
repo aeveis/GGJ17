@@ -20,13 +20,9 @@ public class Treasure : MonoBehaviour
     public BoidFinder boidFinder;
     public Boid myBoid;
 
-    private void Awake()
-    {
-        MetaScreen.current.AddThisChest(this);
-    }
-
     private void Start()
     {
+        MetaScreen.current.AddThisChest(this);
         Hide();
         boidFinder = GetComponentInChildren<BoidFinder>();
     }
@@ -56,6 +52,11 @@ public class Treasure : MonoBehaviour
             else
                 myBoid.IsTreasure = true;
         }
+    }
+
+    void OnMouseDown()
+    {
+        myBoid.TestBoop();
     }
 
     public void SetTreasureFound ()

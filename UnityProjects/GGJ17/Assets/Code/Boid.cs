@@ -243,6 +243,13 @@ public class Boid : MonoBehaviour
             return;
         
         BoopData newInfection = new BoopData(DefaultBoop, true, this);
+
+        if (IsTreasure)
+        {
+            newInfection.IsTreasureBoop = true;
+            BoidManager.current.TreasurePinged(newInfection.BoopID);
+        }
+        
         activeBoops.Add(newInfection);
     }
 

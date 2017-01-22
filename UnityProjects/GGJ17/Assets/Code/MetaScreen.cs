@@ -12,7 +12,7 @@ public class MetaScreen : MonoBehaviour {
     public List<string> allLevels;
 
     [Header("Current Level Info")]
-    public int currentLevel = 1;
+    public int currentLevel = 0;
     public bool currentLevelComplete = false;
     public List<Treasure> allCurrentTreasure = new List<Treasure>();
     public int currentTreasureCollected = 0;
