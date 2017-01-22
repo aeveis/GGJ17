@@ -48,12 +48,19 @@ public class Treasure : MonoBehaviour
 
     public void SetTreasureFound ()
     {
-        Debug.Log("Treasure get!");
-        IsFound = true;
-        TreasureVisual.SetActive(true);
-        myBoid.IsTreasure = false;
-        shipCollider.gameObject.SetActive(true);
-        //gameObject.layer = LayerMask.NameToLayer("Default");
+        if(!IsFound)
+        {
+            Debug.Log("Treasure get!");
+            IsFound = true;
+            TreasureVisual.SetActive(true);
+            myBoid.IsTreasure = false;
+            shipCollider.gameObject.SetActive(true);
+        }
+    }
+
+    public void SetTreasureCollected ()
+    {
+
     }
 
     void OnDrawGizmosSelected()
