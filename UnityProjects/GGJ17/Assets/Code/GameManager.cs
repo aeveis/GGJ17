@@ -135,7 +135,7 @@ public class GameManager : MonoBehaviour {
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         TreasureCollected = 0;
         SubSpawner.ResetSub();
-        Debug.Log("sub resesttingg");
+
         yield return new WaitForSeconds(1f);
         NextLevelScreen.Configure(GetCurrentLevelInfo().PlayerFacingName, GetCurrentLevelInfo().ChestsToComplete);
         NextLevelScreen.SetShow(true);
