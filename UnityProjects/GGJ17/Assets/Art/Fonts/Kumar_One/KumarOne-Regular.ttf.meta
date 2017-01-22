@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 81590f7858975b34d891abea99843795
+timeCreated: 1485098887
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Kumar One
+  fontNames:
+  - Kumar One
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
