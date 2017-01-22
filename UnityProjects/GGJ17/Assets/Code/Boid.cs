@@ -51,6 +51,8 @@ public class BoopData
         GenerationalDecay = data.GenerationalDecay;
         AdditiveDecay = data.AdditiveDecay;
         pingedTreasure = data.IsTreasureBoop;
+        boopLifeTime = data.BoopAge;
+
         if (data.IsTreasureBoop)
             timeSinceTreasure = data.TimeSinceTreasure;
         else
