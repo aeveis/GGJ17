@@ -10,6 +10,7 @@ public class Sub : MonoBehaviour {
 	public float MaxDistance = 5f;
 	public AnimationCurve ForceFalloff;
     public float MaxWaveAge = 2f;
+    public AnimationCurve ForceDecayToAge;
 
 	Rigidbody2D subBody;
 	List<Boid> neighbors = new List<Boid>();
@@ -26,7 +27,7 @@ public class Sub : MonoBehaviour {
 		float distance = Vector2.Distance (sourcePos, subBody.position);
         float forceMag = ForceFalloff.Evaluate(distance / MaxDistance) * ForceMult;
 
-        float additionalForce = Mathf.Clamp(MaxWaveAge - data.BoopAge, 0f, Mathf.Infinity);
+        float additionalForce = ForceDecayToAge.Evaluate(data.BoopAge / MaxWaveAge);
 
         forceMag *= additionalForce;
 
@@ -37,7 +38,8 @@ public class Sub : MonoBehaviour {
 		forcePos.x = Random.Range (ForceRandomness.x * -1, ForceRandomness.x);
 		forcePos.y = Random.Range (ForceRandomness.y * -1, ForceRandomness.y);
 
-		subBody.AddForceAtPosition (direction * forceMag, forcePos); 
+        subBody.AddForceAtPosition (direction * forceMag, forcePos, ForceMode2D.Force); 
+        //subBody.AddForce( (direction + forcePos) * forceMag, ForceMode2D.Force);
 	}
 
 	void OnTriggerEnter2D(Collider2D col)
