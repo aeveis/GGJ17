@@ -110,15 +110,12 @@ public class GameManager : MonoBehaviour {
             return false;
     }
 
-    public bool ResetGame()
+    public void ResetGame()
     {
         if (!currentLevelComplete)
         {
             StartCoroutine(ResetGameCoroutine());
-            return true;
         }
-        else
-            return false;
     }
 
     IEnumerator ResetLevelCoroutine()
