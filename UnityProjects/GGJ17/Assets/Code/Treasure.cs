@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Treasure : MonoBehaviour
 {
@@ -10,18 +11,24 @@ public class Treasure : MonoBehaviour
     public bool GizmosOn = true;
 
     [Header("Visual Controls")]
-    public GameObject TreasureVisual;
     public bool IsFound = false;
+
+    public UnityEvent OnHide;
+    public UnityEvent OnFound;
+    public UnityEvent OnCollected;
 
     public BoidFinder boidFinder;
     public Boid myBoid;
-    public CircleCollider2D shipCollider;
 
     private void Start()
     {
-        TreasureVisual.SetActive(false);
-        shipCollider.gameObject.SetActive(false);
+        Hide();
         boidFinder = GetComponentInChildren<BoidFinder>();
+    }
+
+    public void Hide()
+    {
+        OnHide.Invoke();
     }
 
     void FixedUpdate()
@@ -52,15 +59,14 @@ public class Treasure : MonoBehaviour
         {
             Debug.Log("Treasure get!");
             IsFound = true;
-            TreasureVisual.SetActive(true);
+            OnFound.Invoke();
             myBoid.IsTreasure = false;
-            shipCollider.gameObject.SetActive(true);
         }
     }
 
     public void SetTreasureCollected ()
     {
-        TreasureVisual.SetActive(false);
+        OnCollected.Invoke();
     }
 
     void OnDrawGizmosSelected()
