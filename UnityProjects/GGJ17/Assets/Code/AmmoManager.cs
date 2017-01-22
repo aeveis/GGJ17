@@ -25,10 +25,6 @@ public class AmmoManager : MonoBehaviour {
     private List<GameObject> guessUIList = new List<GameObject>();
     private List<GameObject> coinUIList = new List<GameObject>();
 
-    [Header("Treasure Data")]
-    public LayerMask TreasureCollisionLayer;
-    public GameObject debugSphere;
-
     private void Start()
     {
         SpawnCraneUIs();
