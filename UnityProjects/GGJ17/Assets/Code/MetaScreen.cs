@@ -84,4 +84,10 @@ public class MetaScreen : MonoBehaviour {
         BlackFader.SetBool("FadeTowardsBlack", isAtBlack);
     }
 
+    public void QuitAnimation ()
+    {
+        Debug.Log("Exiting...");
+        Application.Quit();
+    }
+
 }
