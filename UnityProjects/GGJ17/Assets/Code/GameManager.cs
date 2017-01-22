@@ -34,6 +34,8 @@ public class GameManager : MonoBehaviour {
     public NewLevelScreen NextLevelScreen;
     public SimplePopupScreen CompleteScreen;
     public SimplePopupScreen GameWinScreen;
+    public SimplePopupScreen ControlsScreen;
+    public SimplePopupScreen LevelSelectScreen;
 
     [Header("Events")]
     public UnityEvent OnLevelSuccess;
@@ -158,13 +160,18 @@ public class GameManager : MonoBehaviour {
 
     }
 
+    public void TogglePauseMenu()
+    {
+        isInMenuOverlay = !isInMenuOverlay;
+        if (isInMenuOverlay) { PauseScreen.SetActive(true); }
+        else { PauseScreen.SetActive(false); }
+    }
+
     private void Update()
     {
         if(Input.GetKeyUp(KeyCode.Escape))
         {
-            isInMenuOverlay = !isInMenuOverlay;
-            if (isInMenuOverlay) { PauseScreen.SetActive(true); }
-            else { PauseScreen.SetActive(false); }
+            TogglePauseMenu();
         }
 
         if(Input.GetKeyUp(KeyCode.A))
@@ -203,7 +210,9 @@ public class GameManager : MonoBehaviour {
 
     public void RestartLevel ()
     {
-        ResetLevelCoroutine();
+        Debug.Log("Restarting...");
+        TogglePauseMenu();
+        ResetLevel();
     }
 
     public void ShowLevelSelect ()
