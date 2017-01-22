@@ -84,7 +84,17 @@ public class HUDManager : MonoBehaviour {
                     if (myTreasure)
                     {
                         myTreasure.SetTreasureFound();
+                        GameManager.current.CommFX.CraneFX(hit.point, true);
                     }
+                    else
+                    {
+                        GameManager.current.CommFX.CraneFX(hit.point, false);
+                    }
+                }
+                else
+                {
+                    Debug.Log("Somehow you hit nothing");
+                    return;
                 }
 
                 RemoveFireUIHandler();

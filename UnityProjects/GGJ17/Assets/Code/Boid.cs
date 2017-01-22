@@ -249,7 +249,9 @@ public class Boid : MonoBehaviour
             newInfection.IsTreasureBoop = true;
             BoidManager.current.TreasurePinged(newInfection.BoopID);
         }
-        
+
+        GameManager.current.CommFX.ClickFX(true);
+
         activeBoops.Add(newInfection);
     }
 

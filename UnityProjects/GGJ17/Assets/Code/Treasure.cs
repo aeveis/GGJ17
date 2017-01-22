@@ -64,11 +64,18 @@ public class Treasure : MonoBehaviour
         {
             Debug.Log("Treasure get!");
             IsFound = true;
-            OnFound.Invoke();
+            //OnFound.Invoke();
+            StartCoroutine(SetTreasureFoundDelayed());
             MyBoid.IsTreasure = false;
         }
     }
 
+    private IEnumerator SetTreasureFoundDelayed()
+    {
+        //delay to wait for reaction from buoy
+        yield return new WaitForSeconds(2f);
+        OnFound.Invoke();
+    }
     public void SetTreasureCollected ()
     {
         GameManager.current.CollectATreasure();

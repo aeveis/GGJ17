@@ -19,6 +19,7 @@ public class GameManager : MonoBehaviour {
     public SubSpawn SubSpawner;
     public BoidField BoidSpawner;
     public HUDManager HUDManager;
+    public CommandFX CommFX;
 
     [Header("All Levels Info")]
     public List<LevelInfo> LevelList;
@@ -124,6 +125,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(2f);
         CompleteScreen.SetShow(false);
         SetFadeState(false);
+        CommFX.CleanUpCranePool();
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         TreasureCollected = 0;

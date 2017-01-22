@@ -21,4 +21,10 @@ public class BoidRemover : MonoBehaviour {
             boidWrapper.boidInfo.gameObject.SetActive(true);
         }
     }
+
+    private void OnMouseDown()
+    {
+
+        GameManager.current.CommFX.ClickFX(false);
+    }
 }
