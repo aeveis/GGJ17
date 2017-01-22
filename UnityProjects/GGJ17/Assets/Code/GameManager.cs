@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             Debug.Log("You win! No more levels left!");
-            currentLevelComplete = true;
+            currentLevelComplete = false;
             SetFadeState(true);
             GameWinScreen.SetShow(true);
         }
@@ -102,6 +102,17 @@ public class GameManager : MonoBehaviour {
         if (!currentLevelComplete)
         {
             StartCoroutine(ResetLevelCoroutine());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public bool ResetGame()
+    {
+        if (!currentLevelComplete)
+        {
+            StartCoroutine(ResetGameCoroutine());
             return true;
         }
         else
@@ -126,6 +137,25 @@ public class GameManager : MonoBehaviour {
         currentLevelComplete = false;
     }
 
+    IEnumerator ResetGameCoroutine()
+    {
+        currentLevelComplete = true;
+        yield return new WaitForSeconds(1f);
+        SetFadeState(true);
+        yield return new WaitForSeconds(1f);
+        SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
+        CurrentLevel = 0;
+        SceneManager.LoadScene(LevelList[0].LevelID, mode: LoadSceneMode.Additive);
+        CommFX.CleanUpCranePool();
+        HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
+        HUDManager.SpawnCoinUIs();
+        TreasureCollected = 0;
+        SubSpawner.ResetSub();
+        SetFadeState(false);
+        yield return new WaitForSeconds(1f);
+        currentLevelComplete = false;
+    }
+
     IEnumerator AdvanceLevelCoroutine()
     {
         //TODO: End of Level Show
@@ -135,16 +165,18 @@ public class GameManager : MonoBehaviour {
         OnLevelSuccess.Invoke();
         CommFX.CleanUpCranePool();
         HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
+
+
+        yield return new WaitForSeconds(1f);
         //move obstacles so on trigger exit is called - Dan
         var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
-        for(int i = 0;i<obstacles.Length;i++)
+        for (int i = 0; i < obstacles.Length; i++)
         {
-            Debug.Log("obstacles: " + obstacles[i]);
+           // Debug.Log("obstacles: " + obstacles[i]);
             obstacles[i].gameObject.transform.position = Vector3.one * -5f;
         }
+        yield return new WaitForSeconds(1f);
 
-
-        yield return new WaitForSeconds(2f);
         CompleteScreen.SetShow(false);
         SetFadeState(false);
         HUDManager.SpawnCoinUIs();
@@ -162,11 +194,16 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void TogglePauseMenu()
+    public void SetPauseMenu(bool visible)
     {
-        isInMenuOverlay = !isInMenuOverlay;
+        isInMenuOverlay = visible;
         if (isInMenuOverlay) { PauseScreen.SetActive(true); }
         else { PauseScreen.SetActive(false); }
+    }
+
+    public void TogglePauseMenu()
+    {
+        SetPauseMenu(!isInMenuOverlay);
     }
 
     private void Update()
@@ -214,7 +251,6 @@ public class GameManager : MonoBehaviour {
     public void RestartLevel ()
     {
         Debug.Log("Restarting...");
-        TogglePauseMenu();
         ResetLevel();
     }
 

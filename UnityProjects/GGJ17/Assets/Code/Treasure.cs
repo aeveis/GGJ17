@@ -26,6 +26,12 @@ public class Treasure : MonoBehaviour
         BoidFinder = GetComponentInChildren<BoidFinder>();
     }
 
+    void OnDisable()
+    {
+        Debug.Log("Cleaning up undiscovered Treasure.");
+        MyBoid.IsTreasure = false;
+    }
+
     public void Hide()
     {
         OnHide.Invoke();
