@@ -9,6 +9,7 @@ public class LevelInfo
 {
     public string LevelID = "Enter Scene Name Here.";
     public string PlayerFacingName = "A snappy Name";
+    public int InitialCranes = 3;
     public int ChestsToComplete = 1;
 }
 
@@ -27,7 +28,6 @@ public class GameManager : MonoBehaviour {
     [Header("Current Level Info")]
     public int CurrentLevel = 0;
     public int TreasureCollected = 0;
-    public int InitialCranes = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
@@ -112,7 +112,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(1f);
         SetFadeState(true);
         CommFX.CleanUpCranePool();
-        HUDManager.AddUpToCraneUIs(InitialCranes);
+        HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
         yield return new WaitForSeconds(1f);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
@@ -130,8 +130,7 @@ public class GameManager : MonoBehaviour {
         CompleteScreen.SetShow(true);
         OnLevelSuccess.Invoke();
         CommFX.CleanUpCranePool();
-        InitialCranes = (HUDManager.initialGuesses + TreasureCollected)>3 ? (HUDManager.initialGuesses + TreasureCollected) : HUDManager.initialGuesses;
-        HUDManager.AddUpToCraneUIs(InitialCranes);
+        HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
 
         //move obstacles so on trigger exit is called - Dan
         var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
