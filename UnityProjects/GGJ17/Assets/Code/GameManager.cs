@@ -172,7 +172,7 @@ public class GameManager : MonoBehaviour {
         var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
         for (int i = 0; i < obstacles.Length; i++)
         {
-            Debug.Log("obstacles: " + obstacles[i]);
+           // Debug.Log("obstacles: " + obstacles[i]);
             obstacles[i].gameObject.transform.position = Vector3.one * -5f;
         }
         yield return new WaitForSeconds(1f);

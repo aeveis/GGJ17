@@ -19,7 +19,7 @@ public class BoidRemover : MonoBehaviour {
         BoidWrapper boidWrapper = other.gameObject.GetComponent<BoidWrapper>();
         if (boidWrapper)
         {
-            Debug.Log("everyone get out");
+            //Debug.Log("everyone get out");
             boidWrapper.boidInfo.gameObject.SetActive(true);
             boidWrapper.boidInfo.BoidState = Boid.BoidType.Active;
         }
