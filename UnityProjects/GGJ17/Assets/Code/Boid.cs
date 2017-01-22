@@ -34,7 +34,7 @@ public class BoopData
     public float CurrentValue { get { return currentValue; } }
     public float CurrentTime { get { return currentEvaluation; } }
     public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
-    public float TimeSinceTreasure { get { return timeSinceTreasure; } }
+    public float TimeSinceTreasure { get { return timeSinceTreasure; } set { timeSinceTreasure = value; } }
     public float BoopAge { get { return boopLifeTime; } }
 
     public BoopData (BoopData data, bool generateNewID, Boid newParent)
@@ -163,7 +163,7 @@ public class Boid : MonoBehaviour
         if (listPos != -1)
         {
             activeBoops[listPos].IsTreasureBoop = true;
-
+            activeBoops[listPos].TimeSinceTreasure = 0f;
             GiveRedStrengthFrom(activeBoops[listPos]);
         }
     }
@@ -218,8 +218,11 @@ public class Boid : MonoBehaviour
 			
             OnInfected.Invoke(newInfection);
 
-            if(IsTreasure)
+            if (IsTreasure)
+            {
+                data.TimeSinceTreasure = 0f;
                 BoidManager.current.TreasurePinged(data.BoopID);
+            }
 
             if (data.IsTreasureBoop)
                 GiveRedStrengthFrom(data);
@@ -247,6 +250,7 @@ public class Boid : MonoBehaviour
         if (IsTreasure)
         {
             newInfection.IsTreasureBoop = true;
+            newInfection.TimeSinceTreasure = 0f;
             BoidManager.current.TreasurePinged(newInfection.BoopID);
         }
 
