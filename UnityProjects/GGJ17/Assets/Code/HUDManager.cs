@@ -50,24 +50,6 @@ public class HUDManager : MonoBehaviour {
         guessesRemaining = initialGuesses;
     }
 
-    public void AddUpToCraneUIs(int amount)
-    {
-        int totalGuesses = amount>maxGuesses?maxGuesses:amount;
-
-        float guessPrefabHeight = guessUIPrefab.GetComponent<RectTransform>().rect.height;
-        for (int i = guessesRemaining; i < totalGuesses; i++)
-        {
-            GameObject nextIcon = Instantiate(guessUIPrefab) as GameObject;
-            guessUIList.Add(nextIcon);
-            nextIcon.transform.SetParent(guessUIParent.transform, false);
-
-            float newY = transform.parent.localPosition.y - (guessYOffset + guessPrefabHeight) * i;
-            nextIcon.transform.localPosition = new Vector3(0, newY, 0);
-        }
-        
-        guessesRemaining = totalGuesses;
-    }
-
     private void SpawnCoinUIs()
     {
         float coinPrefabHeight = coinUIPrefab.GetComponent<RectTransform>().rect.height;
@@ -84,6 +66,23 @@ public class HUDManager : MonoBehaviour {
 
     }
 
+    public void AddUpToCraneUIs(int amount)
+    {
+
+        float guessPrefabHeight = guessUIPrefab.GetComponent<RectTransform>().rect.height;
+        for (int i = guessesRemaining; i < amount; i++)
+        {
+            GameObject nextIcon = Instantiate(guessUIPrefab) as GameObject;
+            guessUIList.Add(nextIcon);
+            nextIcon.transform.SetParent(guessUIParent.transform, false);
+
+            float newY = transform.parent.localPosition.y - (guessYOffset + guessPrefabHeight) * i;
+            nextIcon.transform.localPosition = new Vector3(0, newY, 0);
+        }
+
+        guessesRemaining = amount;
+    }
+
     /* Update */
     private void Update()
     {
@@ -96,6 +95,7 @@ public class HUDManager : MonoBehaviour {
                 RaycastHit hit;
                 Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
+                bool isWinning = false;
                 if (Physics.Raycast(ray, out hit))
                 {
                     Debug.Log(hit.collider.gameObject.name + " Target Position: " + hit.collider.gameObject.transform.position);
@@ -104,6 +104,7 @@ public class HUDManager : MonoBehaviour {
                     {
                         myTreasure.SetTreasureFound();
                         GameManager.current.CommFX.CraneFX(hit.point, true);
+                        isWinning = true;
                     }
                     else
                     {
@@ -116,22 +117,26 @@ public class HUDManager : MonoBehaviour {
                     return;
                 }
 
-                RemoveFireUIHandler();
+                RemoveFireUIHandler(isWinning);
             }
 
         }
     }
 
-    private void RemoveFireUIHandler()
+    private void RemoveFireUIHandler(bool isWinning)
     {
-        GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
-        guessUIList.Remove(removingThisUI);
-        Destroy(removingThisUI);
-
-        guessesRemaining -= 1;
-        if (guessesRemaining == 0)
+        if (!isWinning || guessesRemaining > 1)
         {
-            Debug.Log("Game over");
+
+            GameObject removingThisUI = guessUIList[guessUIList.Count - 1];
+            guessUIList.Remove(removingThisUI);
+            Destroy(removingThisUI);
+
+            guessesRemaining -= 1;
+            if (guessesRemaining == 0)
+            {
+                Debug.Log("Game over");
+            }
         }
     }
 
