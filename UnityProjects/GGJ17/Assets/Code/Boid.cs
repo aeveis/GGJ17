@@ -28,14 +28,16 @@ public class BoopData
     bool pingedTreasure = false;
     float timeSinceTreasure = 0f;
     float boopLifeTime = 0f;
+    Vector2 direction;
 
+    public Vector2 Direction { get { return direction; } }
     public float CurrentValue { get { return currentValue; } }
     public float CurrentTime { get { return currentEvaluation; } }
     public bool IsTreasureBoop { get { return pingedTreasure; } set { pingedTreasure = value; } }
     public float TimeSinceTreasure { get { return timeSinceTreasure; } }
     public float BoopAge { get { return boopLifeTime; } }
 
-    public BoopData (BoopData data, bool generateNewID)
+    public BoopData (BoopData data, bool generateNewID, Boid newParent)
     {
         if (!generateNewID)
             BoopID = data.BoopID;
@@ -44,6 +46,7 @@ public class BoopData
             BoopID = BoopCounter;
             BoopCounter++;
         }
+        ParentBoid = newParent;
         BoopCurve = data.BoopCurve;
         ValueMult = data.ValueMult;
         TimeMult = data.TimeMult;
@@ -52,6 +55,14 @@ public class BoopData
         AdditiveDecay = data.AdditiveDecay;
         pingedTreasure = data.IsTreasureBoop;
         boopLifeTime = data.BoopAge;
+
+        if (newParent && data.ParentBoid)
+        {
+            Vector3 dir = newParent.transform.position - data.ParentBoid.transform.position;
+            direction.x = dir.x;
+            direction.y = dir.y;
+            direction = direction.normalized;
+        }
 
         if (data.IsTreasureBoop)
             timeSinceTreasure = data.TimeSinceTreasure;
@@ -200,10 +211,9 @@ public class Boid : MonoBehaviour
         
         if (ContainsBoop(data.BoopID) == -1 && data.ValueMult - data.GenerationalDecay > 0f)
         {
-            BoopData newInfection = new BoopData(data, false);
+            BoopData newInfection = new BoopData(data, false, this);
             newInfection.ValueMult -= data.GenerationalDecay;
             newInfection.GenerationalDecay += data.AdditiveDecay;
-            newInfection.ParentBoid = this;
             activeBoops.Add(newInfection);
 			
             OnInfected.Invoke(newInfection);
@@ -232,8 +242,7 @@ public class Boid : MonoBehaviour
         if (BoidState == BoidType.Dead)
             return;
         
-        BoopData newInfection = new BoopData(DefaultBoop, true);
-        newInfection.ParentBoid = this;
+        BoopData newInfection = new BoopData(DefaultBoop, true, this);
         activeBoops.Add(newInfection);
     }
 
