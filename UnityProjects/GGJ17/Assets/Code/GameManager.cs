@@ -135,18 +135,16 @@ public class GameManager : MonoBehaviour {
         OnLevelSuccess.Invoke();
         CommFX.CleanUpCranePool();
         HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
-
-
-        yield return new WaitForSeconds(1f);
         //move obstacles so on trigger exit is called - Dan
         var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
-        for (int i = 0; i < obstacles.Length; i++)
+        for(int i = 0;i<obstacles.Length;i++)
         {
             Debug.Log("obstacles: " + obstacles[i]);
             obstacles[i].gameObject.transform.position = Vector3.one * -5f;
         }
-        yield return new WaitForSeconds(1f);
 
+
+        yield return new WaitForSeconds(2f);
         CompleteScreen.SetShow(false);
         SetFadeState(false);
         HUDManager.SpawnCoinUIs();
