@@ -8,33 +8,37 @@ using UnityEngine.Events;
 public class LevelInfo
 {
     public string LevelID = "Enter Scene Name Here.";
+    public string PlayerFacingName = "A snappy Name";
     public int ChestsToComplete = 1;
 }
 
-public class MetaScreen : MonoBehaviour {
-    public static MetaScreen current;
+public class GameManager : MonoBehaviour {
+    public static GameManager current;
 
     [Header("Managers")]
     public SubSpawn SubSpawner;
     public BoidField BoidSpawner;
-    public AmmoManager HUDManager;
+    public HUDManager HUDManager;
 
     [Header("All Levels Info")]
     public List<LevelInfo> LevelList;
 
     [Header("Current Level Info")]
     public int CurrentLevel = 0;
-    public bool CurrentLevelComplete = false;
-
     public int TreasureCollected = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
+    public NewLevelScreen NextLevelScreen;
+    public SimplePopupScreen CompleteScreen;
 
     public Animator Fader;
 
     [Header("Menu Bools")]
     private bool isInMenuOverlay = false;
+
+    //Private variables
+    bool currentLevelComplete = false;
 
     private void Awake()
     {
@@ -52,22 +56,55 @@ public class MetaScreen : MonoBehaviour {
     {
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         SubSpawner.SpawnSubAt(Vector3.zero);
+        StartCoroutine(FirstLevelCoroutine());
+    }
+
+    IEnumerator FirstLevelCoroutine()
+    {
+        NextLevelScreen.Configure(GetCurrentLevelInfo().PlayerFacingName, GetCurrentLevelInfo().ChestsToComplete);
+        NextLevelScreen.SetShow(true);
+        yield return new WaitForSeconds(4f);
+        NextLevelScreen.SetShow(false);
     }
 
     private void AdvanceLevel()
     {
-        if (CurrentLevel < LevelList.Count - 1)
+        //If the current level we're in is already complete, wait.
+        if (currentLevelComplete)
+            return;
+        
+        CurrentLevel++;
+
+        if (CurrentLevel <= LevelList.Count - 1)
         {
-            CurrentLevel++;
-            SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
-            SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
-            SubSpawner.ResetSub();
+            currentLevelComplete = true;
+            StartCoroutine(AdvanceLevelCoroutine());
         }
         else
         {
             Debug.Log("You win! No more levels left!");
             //TODO: YOU WIN SCREEN
         }
+    }
+
+    IEnumerator AdvanceLevelCoroutine()
+    {
+        //TODO: End of Level Show
+        SetFadeState(true);
+        CompleteScreen.SetShow(true);
+        yield return new WaitForSeconds(2f);
+        CompleteScreen.SetShow(false);
+        SetFadeState(false);
+        SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
+        SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
+        SubSpawner.ResetSub();
+        yield return new WaitForSeconds(1f);
+        NextLevelScreen.Configure(GetCurrentLevelInfo().PlayerFacingName, GetCurrentLevelInfo().ChestsToComplete);
+        NextLevelScreen.SetShow(true);
+        yield return new WaitForSeconds(3f);
+        NextLevelScreen.SetShow(false);
+        currentLevelComplete = false;
+
     }
 
     private void Update()
@@ -101,10 +138,9 @@ public class MetaScreen : MonoBehaviour {
         }
     }
 
-    private void FadeToBlack(bool isAtBlack)
+    private void SetFadeState(bool fade)
     {
-        Debug.Log("Fading: " + isAtBlack);
-        Fader.SetBool("FadeTowardsBlack", isAtBlack);
+        Fader.SetBool("FadeTowardsBlack", fade);
     }
 
     public void QuitAnimation ()

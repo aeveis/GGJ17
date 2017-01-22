@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class AmmoManager : MonoBehaviour {
+public class HUDManager : MonoBehaviour {
     [Header("UI Prefabs")]
     public GameObject guessUIPrefab;
     public GameObject guessUIParent;
@@ -52,7 +52,7 @@ public class AmmoManager : MonoBehaviour {
     private void SpawnCoinUIs()
     {
         float coinPrefabHeight = coinUIPrefab.GetComponent<RectTransform>().rect.height;
-        for (int i = 0; i < MetaScreen.current.GetCurrentLevelInfo().ChestsToComplete; i++)
+        for (int i = 0; i < GameManager.current.GetCurrentLevelInfo().ChestsToComplete; i++)
         {
             GameObject nextIcon = Instantiate(coinUIPrefab) as GameObject;
             coinUIList.Add(nextIcon);

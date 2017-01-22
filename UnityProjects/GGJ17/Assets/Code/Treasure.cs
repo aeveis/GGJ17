@@ -71,7 +71,7 @@ public class Treasure : MonoBehaviour
 
     public void SetTreasureCollected ()
     {
-        MetaScreen.current.CollectATreasure();
+        GameManager.current.CollectATreasure();
         OnCollected.Invoke();
     }
 
