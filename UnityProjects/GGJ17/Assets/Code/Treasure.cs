@@ -20,6 +20,11 @@ public class Treasure : MonoBehaviour
     public BoidFinder boidFinder;
     public Boid myBoid;
 
+    private void Awake()
+    {
+        MetaScreen.current.AddThisChest(this);
+    }
+
     private void Start()
     {
         Hide();

@@ -14,7 +14,7 @@ public class MetaScreen : MonoBehaviour {
     [Header("Current Level Info")]
     public int currentLevel = 1;
     public bool currentLevelComplete = false;
-    public Treasure[] allCurrentTreasure;
+    public List<Treasure> allCurrentTreasure = new List<Treasure>();
     public int currentTreasureCollected = 0;
 
     [Header("Menu Screens")]
@@ -32,12 +32,12 @@ public class MetaScreen : MonoBehaviour {
     private void Awake()
     {
         current = this;
+        PauseScreen.SetActive(false);
+        SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
     }
 
     private void Start()
     {
-        PauseScreen.SetActive(false);
-        SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
         GetAllChests();
     }
 
@@ -79,10 +79,14 @@ public class MetaScreen : MonoBehaviour {
         }
     }
 
+    public void AddThisChest (Treasure thisTreasure)
+    {
+        allCurrentTreasure.Add(thisTreasure);
+    }
+
     private void GetAllChests ()
     {
-        allCurrentTreasure = GameObject.FindObjectsOfType<Treasure>();
-        Debug.Log(allCurrentTreasure.Length);
+        Debug.Log(allCurrentTreasure.Count);
     }
 
     public void CollectATreasure (Treasure thisTreasure)
@@ -95,7 +99,7 @@ public class MetaScreen : MonoBehaviour {
 
     public void CheckIfLevelComplete ()
     {
-        if(currentTreasureCollected >= allCurrentTreasure.Length)
+        if(currentTreasureCollected >= allCurrentTreasure.Count)
         {
             Debug.Log("You won the level!");
             NextScene();

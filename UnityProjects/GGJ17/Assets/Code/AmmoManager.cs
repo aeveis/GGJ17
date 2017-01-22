@@ -13,6 +13,7 @@ public class AmmoManager : MonoBehaviour {
     public GameObject coinUIParent;
     public float guessYOffset = 10f;
     public float coinXOffset = 10f;
+    public float coinYOffset = 10f;
 
     [Header("Initial Ammo")]
     public int initialBoops = 5;
@@ -55,13 +56,13 @@ public class AmmoManager : MonoBehaviour {
     private void SpawnCoinUIs()
     {
         float coinPrefabHeight = coinUIPrefab.GetComponent<RectTransform>().rect.height;
-        for (int i = 0; i < MetaScreen.current.allCurrentTreasure.Length; i++)
+        for (int i = 0; i < MetaScreen.current.allCurrentTreasure.Count; i++)
         {
             GameObject nextIcon = Instantiate(coinUIPrefab) as GameObject;
             coinUIList.Add(nextIcon);
             nextIcon.transform.SetParent(coinUIParent.transform, false);
 
-            float newX = transform.parent.localPosition.x - (guessYOffset + coinPrefabHeight) * i;
+            float newX = (transform.parent.localPosition.x + coinXOffset) - (coinYOffset + coinPrefabHeight) * i;
             nextIcon.transform.localPosition = new Vector3(newX, 0, 0);
         }
 
