@@ -93,6 +93,7 @@ public class GameManager : MonoBehaviour {
         {
             Debug.Log("You win! No more levels left!");
             currentLevelComplete = false;
+            LevelCompleteParticles.Play();
             SetFadeState(true);
             GameWinScreen.SetShow(true);
         }
