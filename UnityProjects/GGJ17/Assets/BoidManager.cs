@@ -15,6 +15,8 @@ public class BoidManager : MonoBehaviour
 
     public UnityIntEvent OnTreasurePinged;
 
+    public UnityEvent OnTreasurePingedExternal;
+
     void Awake()
     {
         current = this;
@@ -24,5 +26,6 @@ public class BoidManager : MonoBehaviour
     {
         //Debug.Log("Treausre is Pinged!");
         OnTreasurePinged.Invoke(boopID);
+        OnTreasurePingedExternal.Invoke();
     }
 }
