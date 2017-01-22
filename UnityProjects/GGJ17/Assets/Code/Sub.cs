@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
-public class Sub : MonoBehaviour {
-
-	public Vector2 ForceRandomness = Vector2.zero;
+public class Sub : MonoBehaviour 
+{
 	public float ForceMult = 1f;
 	public float MaxDistance = 5f;
 	public AnimationCurve ForceFalloff;
@@ -31,15 +30,13 @@ public class Sub : MonoBehaviour {
 
         forceMag *= additionalForce;
 
-		Vector2 direction = subBody.position - sourcePos;
-		direction = direction.normalized;
+		//Vector2 direction = subBody.position - sourcePos;
+		//direction = direction.normalized;
+        Vector2 direction = data.Direction;
 
-		Vector2 forcePos;
-		forcePos.x = Random.Range (ForceRandomness.x * -1, ForceRandomness.x);
-		forcePos.y = Random.Range (ForceRandomness.y * -1, ForceRandomness.y);
-
-        subBody.AddForceAtPosition (direction * forceMag, forcePos, ForceMode2D.Force); 
-        //subBody.AddForce( (direction + forcePos) * forceMag, ForceMode2D.Force);
+        //subBody.AddForceAtPosition (direction * forceMag, forcePos, ForceMode2D.Force); 
+        subBody.AddForce( (direction) * forceMag, ForceMode2D.Force);
+        subBody.AddTorque( Random.Range(forceMag * -1 / 10f, forceMag / 10f), ForceMode2D.Force);
 	}
 
 	void OnTriggerEnter2D(Collider2D col)
