@@ -7,7 +7,11 @@ public class AmmoManager : MonoBehaviour {
     [Header("UI Prefabs")]
     public GameObject guessUIPrefab;
     public GameObject guessUIParent;
-    public float guessXOffset = 10f;
+    public GameObject coinUIPrefab;
+    public Sprite coinUIFound;
+    public Sprite coinUIHidden;
+    public GameObject coinUIParent;
+    public float guessYOffset = 10f;
 
     [Header("Initial Ammo")]
     public int initialBoops = 5;
@@ -24,21 +28,34 @@ public class AmmoManager : MonoBehaviour {
 
     private void Start()
     {
-        float guessPrefabWidth = guessUIPrefab.GetComponent<RectTransform>().rect.width;
-        for(int i = 0; i < initialGuesses; i++)
+        SpawnCraneUIs();
+        SpawnCoinUIs();
+    }
+
+    /* UI Spawners */
+    private void SpawnCraneUIs()
+    {
+        float guessPrefabHeight = guessUIPrefab.GetComponent<RectTransform>().rect.height;
+        for (int i = 0; i < initialGuesses; i++)
         {
             GameObject nextIcon = Instantiate(guessUIPrefab) as GameObject;
             guessUIList.Add(nextIcon);
             nextIcon.transform.SetParent(guessUIParent.transform, false);
 
-            float newX = transform.parent.localPosition.x + (guessXOffset + guessPrefabWidth)* i;
-            nextIcon.transform.localPosition = new Vector3(newX, 0, 0);
+            float newY = transform.parent.localPosition.y - (guessYOffset + guessPrefabHeight) * i;
+            nextIcon.transform.localPosition = new Vector3(0, newY, 0);
         }
 
         boopsRemaining = initialBoops;
         guessesRemaining = initialGuesses;
     }
 
+    private void SpawnCoinUIs()
+    {
+
+    }
+
+    /* Update */
     private void Update()
     {
         if (Input.GetMouseButtonUp(1) && !(MetaScreen.current.isPaused))
