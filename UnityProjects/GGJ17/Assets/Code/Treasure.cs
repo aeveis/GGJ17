@@ -15,10 +15,12 @@ public class Treasure : MonoBehaviour
 
     public BoidFinder boidFinder;
     public Boid myBoid;
+    public CircleCollider2D shipCollider;
 
     private void Start()
     {
         TreasureVisual.SetActive(false);
+        shipCollider.gameObject.SetActive(false);
         boidFinder = GetComponentInChildren<BoidFinder>();
     }
 
@@ -50,6 +52,8 @@ public class Treasure : MonoBehaviour
         IsFound = true;
         TreasureVisual.SetActive(true);
         myBoid.IsTreasure = false;
+        shipCollider.gameObject.SetActive(true);
+        //gameObject.layer = LayerMask.NameToLayer("Default");
     }
 
     void OnDrawGizmosSelected()
