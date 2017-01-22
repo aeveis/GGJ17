@@ -200,6 +200,28 @@ public class GameManager : MonoBehaviour {
         Fader.SetBool("FadeTowardsBlack", fade);
     }
 
+    /* Pause Menu Buttons */
+
+    public void RestartLevel ()
+    {
+        ResetLevelCoroutine();
+    }
+
+    public void ShowLevelSelect ()
+    {
+
+    }
+
+    public void ShowControls ()
+    {
+
+    }
+
+    public void HideControls ()
+    {
+
+    }
+
     public void QuitAnimation ()
     {
         Debug.Log("Exiting...");
