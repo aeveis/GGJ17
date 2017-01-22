@@ -35,6 +35,9 @@ public class GameManager : MonoBehaviour {
     public SimplePopupScreen CompleteScreen;
     public SimplePopupScreen GameWinScreen;
 
+    [Header("Events")]
+    public UnityEvent OnLevelSuccess;
+
     public Animator Fader;
 
     [Header("Menu Bools")]
@@ -125,6 +128,7 @@ public class GameManager : MonoBehaviour {
         //TODO: End of Level Show
         SetFadeState(true);
         CompleteScreen.SetShow(true);
+        OnLevelSuccess.Invoke();
         CommFX.CleanUpCranePool();
         InitialCranes = (HUDManager.initialGuesses + TreasureCollected)>3 ? (HUDManager.initialGuesses + TreasureCollected) : HUDManager.initialGuesses;
         HUDManager.AddUpToCraneUIs(InitialCranes);
