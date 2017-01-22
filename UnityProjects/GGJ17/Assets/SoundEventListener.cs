@@ -31,6 +31,7 @@ public class SoundEventListener : MonoBehaviour
 			else
 				id++;
 		}
+
 		if (!SourceOverride) {
 			if (pitchVariance == 0)
 				SoundManager.instance.playSingle (randomGroup [id]);
