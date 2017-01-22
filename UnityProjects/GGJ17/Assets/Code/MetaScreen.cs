@@ -37,13 +37,8 @@ public class MetaScreen : MonoBehaviour {
     private void Start()
     {
         PauseScreen.SetActive(false);
-        LoadSceneNumber(currentLevel);
+        SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
         GetAllChests();
-    }
-
-    private void LoadSceneNumber(int sceneNumber)
-    {
-        SceneManager.LoadScene(allLevels[sceneNumber], mode: LoadSceneMode.Additive);
     }
 
     private void NextScene()
