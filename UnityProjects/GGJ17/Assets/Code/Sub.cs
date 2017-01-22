@@ -1,23 +1,78 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody2D))]
 public class Sub : MonoBehaviour 
 {
+    [Header("Handling Characteristics")]
 	public float ForceMult = 1f;
 	public float MaxDistance = 5f;
 	public AnimationCurve ForceFalloff;
     public float MaxWaveAge = 2f;
     public AnimationCurve ForceDecayToAge;
 
+    [Header("Health Characteristics")]
+    public ParticleSystem Smoke;
+    public int MaxHp = 3;
+    public bool Invulnerable = false;
+    public UnityEvent OnReset;
+    public UnityEvent OnDamaged;
+    public UnityEvent OnDestroyed;
+
+    int currentHp;
 	Rigidbody2D subBody;
 	List<Boid> neighbors = new List<Boid>();
 
 	void Start(){
 		transform.localPosition = new Vector3 (0, 0, 0);
 		subBody = GetComponent<Rigidbody2D> ();
+        currentHp = MaxHp;
 	}
+
+    public void ResetHealth()
+    {
+        SetSmokeEmission(0f);
+        currentHp = MaxHp;
+        OnReset.Invoke();
+    }
+
+    public void TakeDamage()
+    {
+        if (!Invulnerable)
+        {
+            currentHp -= 1;
+
+            if (currentHp <= 0)
+            {
+                bool didRestart = GameManager.current.ResetLevel();
+                if (didRestart)
+                {
+                    SetSmokeEmission(0f);
+                    OnDestroyed.Invoke();
+                }
+                else
+                    ResetHealth(); // Some Race condition safety. If we died while transitioning, just reset the sub.
+            }
+            else
+            {
+                SetSmokeEmission(5f * (MaxHp - currentHp));
+                OnDamaged.Invoke();
+            }
+        }
+    }
+
+    public void SetSmokeEmission(float newRate)
+    {
+        var em = Smoke.emission;
+
+        var rate = em.rateOverTime;
+
+        rate.constant = newRate;
+
+        em.rateOverTime = rate;
+    }
 
     public void ForceToPosition(Vector3 position)
     {

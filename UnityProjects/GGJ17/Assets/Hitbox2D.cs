@@ -11,7 +11,7 @@ public class Hitbox2D : MonoBehaviour
     [Tooltip("The cooldown time between collision events.")]
     public float Cooldown = 1f;
     public List<string> CollidesWithTags = new List<string>();
-
+    public float MinCollisionForce = 2f;
     public UnityEvent OnHit;
 
     float currentCooldown = 0f;
@@ -35,8 +35,12 @@ public class Hitbox2D : MonoBehaviour
             {
                 if (col.gameObject.tag == CollidesWithTags[i])
                 {
-                    currentCooldown = Cooldown;
-                    OnHit.Invoke();
+                    Debug.Log("Collision Velocity: " + col.relativeVelocity.magnitude);
+                    if (col.relativeVelocity.magnitude >= MinCollisionForce)
+                    {
+                        currentCooldown = Cooldown;
+                        OnHit.Invoke();
+                    }
                 }
             }
             

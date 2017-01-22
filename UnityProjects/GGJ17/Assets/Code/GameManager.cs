@@ -90,15 +90,21 @@ public class GameManager : MonoBehaviour {
         }
     }
 
-    private void ResetLevel()
+    public bool ResetLevel()
     {
-        if(!currentLevelComplete)
+        if (!currentLevelComplete)
+        {
             StartCoroutine(ResetLevelCoroutine());
+            return true;
+        }
+        else
+            return false;
     }
 
     IEnumerator ResetLevelCoroutine()
     {
         currentLevelComplete = true;
+        yield return new WaitForSeconds(1f);
         SetFadeState(true);
         yield return new WaitForSeconds(1f);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);

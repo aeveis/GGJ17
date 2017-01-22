@@ -25,6 +25,7 @@ public class SubSpawn : MonoBehaviour {
     public void ResetSub()
     {
         activeSub.ForceToPosition(spawnPos);
+        activeSub.ResetHealth();
     }
 
 }
