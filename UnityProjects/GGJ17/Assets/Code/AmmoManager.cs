@@ -19,7 +19,6 @@ public class AmmoManager : MonoBehaviour {
     private List<GameObject> guessUIList = new List<GameObject>();
 
     [Header("Treasure Data")]
-    public UnityEvent onTreasureFound;
     public LayerMask TreasureCollisionLayer;
     public GameObject debugSphere;
 

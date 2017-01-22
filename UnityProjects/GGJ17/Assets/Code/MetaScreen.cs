@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class MetaScreen : MonoBehaviour {
     public static MetaScreen current;
@@ -14,7 +15,7 @@ public class MetaScreen : MonoBehaviour {
     public int currentLevel = 1;
     public bool currentLevelComplete = false;
     public Treasure[] allCurrentTreasure;
-    public int currentTreasureFound = 0;
+    public int currentTreasureCollected = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
@@ -57,7 +58,7 @@ public class MetaScreen : MonoBehaviour {
         }
         else
         {
-            Debug.Log("You win!");
+            Debug.Log("You win! No more levels left!");
             //TODO: YOU WIN SCREEN
         }
     }
@@ -92,6 +93,18 @@ public class MetaScreen : MonoBehaviour {
     public void CollectATreasure (Treasure thisTreasure)
     {
         Debug.Log("Treasure collected!");
+        thisTreasure.SetTreasureCollected();
+        currentTreasureCollected += 1;
+        CheckIfLevelComplete();
+    }
+
+    public void CheckIfLevelComplete ()
+    {
+        if(currentTreasureCollected >= allCurrentTreasure.Length)
+        {
+            Debug.Log("You won the level!");
+            NextScene();
+        }
     }
 
     private void FadeToBlack(bool isAtBlack)

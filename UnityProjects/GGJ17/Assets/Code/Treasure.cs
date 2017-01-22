@@ -60,7 +60,7 @@ public class Treasure : MonoBehaviour
 
     public void SetTreasureCollected ()
     {
-
+        TreasureVisual.SetActive(false);
     }
 
     void OnDrawGizmosSelected()
