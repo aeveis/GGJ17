@@ -31,6 +31,7 @@ public class GameManager : MonoBehaviour {
     public GameObject PauseScreen;
     public NewLevelScreen NextLevelScreen;
     public SimplePopupScreen CompleteScreen;
+    public SimplePopupScreen GameWinScreen;
 
     public Animator Fader;
 
@@ -83,8 +84,30 @@ public class GameManager : MonoBehaviour {
         else
         {
             Debug.Log("You win! No more levels left!");
-            //TODO: YOU WIN SCREEN
+            currentLevelComplete = true;
+            SetFadeState(true);
+            GameWinScreen.SetShow(true);
         }
+    }
+
+    private void ResetLevel()
+    {
+        if(!currentLevelComplete)
+            StartCoroutine(ResetLevelCoroutine());
+    }
+
+    IEnumerator ResetLevelCoroutine()
+    {
+        currentLevelComplete = true;
+        SetFadeState(true);
+        yield return new WaitForSeconds(1f);
+        SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
+        SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
+        TreasureCollected = 0;
+        SubSpawner.ResetSub();
+        SetFadeState(false);
+        yield return new WaitForSeconds(1f);
+        currentLevelComplete = false;
     }
 
     IEnumerator AdvanceLevelCoroutine()
@@ -97,6 +120,7 @@ public class GameManager : MonoBehaviour {
         SetFadeState(false);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
+        TreasureCollected = 0;
         SubSpawner.ResetSub();
         yield return new WaitForSeconds(1f);
         NextLevelScreen.Configure(GetCurrentLevelInfo().PlayerFacingName, GetCurrentLevelInfo().ChestsToComplete);
@@ -119,6 +143,11 @@ public class GameManager : MonoBehaviour {
         if(Input.GetKeyUp(KeyCode.A))
         {
             AdvanceLevel();
+        }
+
+        if(Input.GetKeyUp(KeyCode.R))
+        {
+            ResetLevel();
         }
     }
 
