@@ -36,6 +36,7 @@ public class GameManager : MonoBehaviour {
     public SimplePopupScreen GameWinScreen;
     public SimplePopupScreen ControlsScreen;
     public SimplePopupScreen LevelSelectScreen;
+    public ParticleSystem LevelCompleteParticles;
 
     [Header("Events")]
     public UnityEvent OnLevelSuccess;
@@ -159,6 +160,7 @@ public class GameManager : MonoBehaviour {
     IEnumerator AdvanceLevelCoroutine()
     {
         //TODO: End of Level Show
+        LevelCompleteParticles.Play();
         yield return new WaitForSeconds(1f);
         SetFadeState(true);
         CompleteScreen.SetShow(true);

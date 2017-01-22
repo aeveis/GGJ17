@@ -29,7 +29,8 @@ public class Treasure : MonoBehaviour
     void OnDisable()
     {
         Debug.Log("Cleaning up undiscovered Treasure.");
-        MyBoid.IsTreasure = false;
+        if(MyBoid)
+            MyBoid.IsTreasure = false;
     }
 
     public void Hide()
