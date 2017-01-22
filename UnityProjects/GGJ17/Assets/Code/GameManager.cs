@@ -91,7 +91,7 @@ public class GameManager : MonoBehaviour {
         else
         {
             Debug.Log("You win! No more levels left!");
-            currentLevelComplete = true;
+            currentLevelComplete = false;
             SetFadeState(true);
             GameWinScreen.SetShow(true);
         }
@@ -102,6 +102,17 @@ public class GameManager : MonoBehaviour {
         if (!currentLevelComplete)
         {
             StartCoroutine(ResetLevelCoroutine());
+            return true;
+        }
+        else
+            return false;
+    }
+
+    public bool ResetGame()
+    {
+        if (!currentLevelComplete)
+        {
+            StartCoroutine(ResetGameCoroutine());
             return true;
         }
         else
@@ -119,6 +130,25 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(1f);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
+        TreasureCollected = 0;
+        SubSpawner.ResetSub();
+        SetFadeState(false);
+        yield return new WaitForSeconds(1f);
+        currentLevelComplete = false;
+    }
+
+    IEnumerator ResetGameCoroutine()
+    {
+        currentLevelComplete = true;
+        yield return new WaitForSeconds(1f);
+        SetFadeState(true);
+        yield return new WaitForSeconds(1f);
+        SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
+        CurrentLevel = 0;
+        SceneManager.LoadScene(LevelList[0].LevelID, mode: LoadSceneMode.Additive);
+        CommFX.CleanUpCranePool();
+        HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
+        HUDManager.SpawnCoinUIs();
         TreasureCollected = 0;
         SubSpawner.ResetSub();
         SetFadeState(false);
@@ -214,7 +244,6 @@ public class GameManager : MonoBehaviour {
     public void RestartLevel ()
     {
         Debug.Log("Restarting...");
-        TogglePauseMenu();
         ResetLevel();
     }
 
