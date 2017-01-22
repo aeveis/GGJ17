@@ -70,7 +70,7 @@ public class Treasure : MonoBehaviour
         }
     }
 
-    private IEnumerator SetTreasureFoundDelayed()
+    public IEnumerator SetTreasureFoundDelayed()
     {
         //delay to wait for reaction from buoy
         yield return new WaitForSeconds(2f);

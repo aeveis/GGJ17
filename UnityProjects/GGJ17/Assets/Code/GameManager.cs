@@ -27,6 +27,7 @@ public class GameManager : MonoBehaviour {
     [Header("Current Level Info")]
     public int CurrentLevel = 0;
     public int TreasureCollected = 0;
+    public int InitialCranes = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
@@ -107,6 +108,8 @@ public class GameManager : MonoBehaviour {
         currentLevelComplete = true;
         yield return new WaitForSeconds(1f);
         SetFadeState(true);
+        CommFX.CleanUpCranePool();
+        HUDManager.AddUpToCraneUIs(InitialCranes);
         yield return new WaitForSeconds(1f);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
@@ -122,14 +125,17 @@ public class GameManager : MonoBehaviour {
         //TODO: End of Level Show
         SetFadeState(true);
         CompleteScreen.SetShow(true);
+        CommFX.CleanUpCranePool();
+        InitialCranes = (HUDManager.initialGuesses + TreasureCollected)>3 ? (HUDManager.initialGuesses + TreasureCollected) : HUDManager.initialGuesses;
+        HUDManager.AddUpToCraneUIs(InitialCranes);
         yield return new WaitForSeconds(2f);
         CompleteScreen.SetShow(false);
         SetFadeState(false);
-        CommFX.CleanUpCranePool();
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         TreasureCollected = 0;
         SubSpawner.ResetSub();
+        Debug.Log("sub resesttingg");
         yield return new WaitForSeconds(1f);
         NextLevelScreen.Configure(GetCurrentLevelInfo().PlayerFacingName, GetCurrentLevelInfo().ChestsToComplete);
         NextLevelScreen.SetShow(true);

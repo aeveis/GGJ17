@@ -65,13 +65,28 @@ public class Sub : MonoBehaviour
 
     public void SetSmokeEmission(float newRate)
     {
-        var em = Smoke.emission;
 
-        var rate = em.rateOverTime;
+        StartCoroutine(SetSmokeEmissionCheck(newRate));
+       // var em = Smoke.emission;
+        
+        // var rate = em.rateOverTime;
 
-        rate.constant = newRate;
+        //   rate.constant = newRate;
 
-        em.rateOverTime = rate;
+        //   em.rateOverTime = rate;
+    }
+
+    private IEnumerator SetSmokeEmissionCheck(float newRate)
+    {
+        while (Smoke==null|| !Smoke.gameObject.activeSelf || !Smoke.emission.enabled)
+        {
+            yield return null;
+        }
+
+        var em = Smoke.emission.rateOverTime;
+        em.mode = ParticleSystemCurveMode.Constant;
+        em.constantMax = newRate;
+        em.constantMin = newRate;
     }
 
     public void ForceToPosition(Vector3 position)

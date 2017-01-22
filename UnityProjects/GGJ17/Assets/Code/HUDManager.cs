@@ -18,6 +18,7 @@ public class HUDManager : MonoBehaviour {
     [Header("Initial Ammo")]
     public int initialBoops = 5;
     public int initialGuesses = 3;
+    public int maxGuesses = 8;
 
     [Header("Current Ammo Levels")]
     public int boopsRemaining;
@@ -47,6 +48,24 @@ public class HUDManager : MonoBehaviour {
 
         boopsRemaining = initialBoops;
         guessesRemaining = initialGuesses;
+    }
+
+    public void AddUpToCraneUIs(int amount)
+    {
+        int totalGuesses = amount>maxGuesses?maxGuesses:amount;
+
+        float guessPrefabHeight = guessUIPrefab.GetComponent<RectTransform>().rect.height;
+        for (int i = guessesRemaining; i < totalGuesses; i++)
+        {
+            GameObject nextIcon = Instantiate(guessUIPrefab) as GameObject;
+            guessUIList.Add(nextIcon);
+            nextIcon.transform.SetParent(guessUIParent.transform, false);
+
+            float newY = transform.parent.localPosition.y - (guessYOffset + guessPrefabHeight) * i;
+            nextIcon.transform.localPosition = new Vector3(0, newY, 0);
+        }
+        
+        guessesRemaining = totalGuesses;
     }
 
     private void SpawnCoinUIs()
