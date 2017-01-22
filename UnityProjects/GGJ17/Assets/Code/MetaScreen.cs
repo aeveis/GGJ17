@@ -2,15 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.Events;
 
 public class MetaScreen : MonoBehaviour {
     public static MetaScreen current;
 
-    [Header("Level Info")]
-    public int currentLevel;
+    [Header("All Levels Info")]
     public int lastUnlockedLevel;
-    public bool currentLevelComplete = false;
     public List<string> allLevels;
+
+    [Header("Current Level Info")]
+    public int currentLevel = 1;
+    public bool currentLevelComplete = false;
+    public Treasure[] allCurrentTreasure;
+    public int currentTreasureCollected = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
@@ -32,12 +37,13 @@ public class MetaScreen : MonoBehaviour {
     private void Start()
     {
         PauseScreen.SetActive(false);
-        LoadSceneNumber(1);
+        LoadSceneNumber(currentLevel);
+        GetAllChests();
     }
 
     private void LoadSceneNumber(int sceneNumber)
     {
-        SceneManager.LoadScene(sceneNumber, mode: LoadSceneMode.Additive);
+        SceneManager.LoadScene(allLevels[sceneNumber], mode: LoadSceneMode.Additive);
     }
 
     private void NextScene()
@@ -52,7 +58,7 @@ public class MetaScreen : MonoBehaviour {
         }
         else
         {
-            Debug.Log("You win!");
+            Debug.Log("You win! No more levels left!");
             //TODO: YOU WIN SCREEN
         }
     }
@@ -75,6 +81,29 @@ public class MetaScreen : MonoBehaviour {
         {
             FadeToBlack(TempFaderBool);
             TempFaderBool = !TempFaderBool;
+        }
+    }
+
+    private void GetAllChests ()
+    {
+        allCurrentTreasure = GameObject.FindObjectsOfType<Treasure>();
+        Debug.Log(allCurrentTreasure.Length);
+    }
+
+    public void CollectATreasure (Treasure thisTreasure)
+    {
+        Debug.Log("Treasure collected!");
+        thisTreasure.SetTreasureCollected();
+        currentTreasureCollected += 1;
+        CheckIfLevelComplete();
+    }
+
+    public void CheckIfLevelComplete ()
+    {
+        if(currentTreasureCollected >= allCurrentTreasure.Length)
+        {
+            Debug.Log("You won the level!");
+            NextScene();
         }
     }
 
