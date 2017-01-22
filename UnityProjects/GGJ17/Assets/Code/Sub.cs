@@ -19,6 +19,13 @@ public class Sub : MonoBehaviour
 		subBody = GetComponent<Rigidbody2D> ();
 	}
 
+    public void ForceToPosition(Vector3 position)
+    {
+        transform.position = position;
+        subBody.velocity = Vector2.zero;
+        subBody.angularVelocity = 0f;
+    }
+
     void ApplyForceToMeFrom (BoopData data)
 	{
         Vector2 sourcePos = new Vector2(data.ParentBoid.transform.position.x, data.ParentBoid.transform.position.y);

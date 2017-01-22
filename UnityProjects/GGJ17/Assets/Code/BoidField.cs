@@ -18,27 +18,29 @@ public class BoidField : MonoBehaviour {
 	public int totalBoids = 0;
 	public float randomSpacingThreshold = .05f;
 
-	// Use this for initialization
-	void Awake () {
-
-		switch (GenerationMethod) 
-		{
-		case GenerationType.Grid:
-			grid ();
-			break;
-		case GenerationType.Cluster:
-			cluster ();
-			break;
-		case GenerationType.RandomGrid:
-			randomGrid ();
-			break;
-		default:
-			randomGrid ();
-			break;
-		}
-
-			
-	}
+    bool generated = false;
+   
+    public void Generate()
+    {
+        if (generated)
+            return;
+        
+        switch (GenerationMethod) 
+        {
+            case GenerationType.Grid:
+                grid ();
+                break;
+            case GenerationType.Cluster:
+                cluster ();
+                break;
+            case GenerationType.RandomGrid:
+                randomGrid ();
+                break;
+            default:
+                randomGrid ();
+                break;
+        }
+    }
 		
 	void grid(){
 		DistanceBetweenBoids = .3f;

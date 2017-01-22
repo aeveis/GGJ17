@@ -7,6 +7,9 @@ using UnityEngine.Events;
 public class MetaScreen : MonoBehaviour {
     public static MetaScreen current;
 
+    public SubSpawn SubSpawner;
+    public BoidField BoidSpawner;
+
     [Header("All Levels Info")]
     public int lastUnlockedLevel;
     public List<string> allLevels;
@@ -33,12 +36,13 @@ public class MetaScreen : MonoBehaviour {
     {
         current = this;
         PauseScreen.SetActive(false);
+        BoidSpawner.Generate();
         SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
     }
 
     private void Start()
     {
-        GetAllChests();
+        SubSpawner.SpawnSubAt(Vector3.zero);
     }
 
     private void NextScene()
@@ -49,7 +53,7 @@ public class MetaScreen : MonoBehaviour {
             currentLevel++;
             SceneManager.UnloadSceneAsync(allLevels[currentLevel - 1]);
             SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
-            isPaused = false;
+            SubSpawner.ResetSub();
         }
         else
         {
@@ -82,11 +86,6 @@ public class MetaScreen : MonoBehaviour {
     public void AddThisChest (Treasure thisTreasure)
     {
         allCurrentTreasure.Add(thisTreasure);
-    }
-
-    private void GetAllChests ()
-    {
-        Debug.Log(allCurrentTreasure.Count);
     }
 
     public void CollectATreasure (Treasure thisTreasure)
