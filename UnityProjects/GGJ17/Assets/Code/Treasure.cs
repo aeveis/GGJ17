@@ -17,14 +17,13 @@ public class Treasure : MonoBehaviour
     public UnityEvent OnFound;
     public UnityEvent OnCollected;
 
-    public BoidFinder boidFinder;
-    public Boid myBoid;
+    public BoidFinder BoidFinder;
+    public Boid MyBoid;
 
     private void Start()
     {
-        MetaScreen.current.AddThisChest(this);
         Hide();
-        boidFinder = GetComponentInChildren<BoidFinder>();
+        BoidFinder = GetComponentInChildren<BoidFinder>();
     }
 
     public void Hide()
@@ -32,31 +31,31 @@ public class Treasure : MonoBehaviour
         OnHide.Invoke();
     }
 
+    public void BoopBoid()
+    {
+        MyBoid.TestBoop();
+    }
+
     void FixedUpdate()
     {
-        if (!myBoid)
+        if (!MyBoid)
             RegisterWithBoid();
     }
 
     void RegisterWithBoid()
     {
-        if (!boidFinder)
+        if (!BoidFinder)
         {
             Debug.Log("Uh oh. No Boid Finder Configured on Treasure.");
         }
         else
         {
-            myBoid = boidFinder.GetClosestBoid();
-            if (!myBoid)
+            MyBoid = BoidFinder.GetClosestBoid();
+            if (!MyBoid)
                 Debug.LogWarning("WARNING: No Closest Boid Found on Treasure");
             else
-                myBoid.IsTreasure = true;
+                MyBoid.IsTreasure = true;
         }
-    }
-
-    void OnMouseDown()
-    {
-        myBoid.TestBoop();
     }
 
     public void SetTreasureFound ()
@@ -66,12 +65,13 @@ public class Treasure : MonoBehaviour
             Debug.Log("Treasure get!");
             IsFound = true;
             OnFound.Invoke();
-            myBoid.IsTreasure = false;
+            MyBoid.IsTreasure = false;
         }
     }
 
     public void SetTreasureCollected ()
     {
+        MetaScreen.current.CollectATreasure();
         OnCollected.Invoke();
     }
 

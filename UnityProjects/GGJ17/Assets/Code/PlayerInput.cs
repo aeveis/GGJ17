@@ -10,6 +10,5 @@ public class PlayerInput : MonoBehaviour
     private void OnMouseDown()
     {
         onBooped.Invoke();
-        Debug.Log("Boop!");
     }
 }
