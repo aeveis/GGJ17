@@ -12,8 +12,15 @@ public class MetaScreen : MonoBehaviour {
     public bool currentLevelComplete = false;
     public List<string> allLevels;
 
-    [Header("Pause Handler")]
+    [Header("Menu Screens")]
     public GameObject PauseScreen;
+    public GameObject ControlsScreen;
+    public GameObject LevelSelectScreen;
+
+    public Animator BlackFader;
+    public bool TempFaderBool = false;
+
+    [Header("Menu Bools")]
     public bool isPaused = false;
     private bool isInMenuOverlay = false;
 
@@ -63,5 +70,18 @@ public class MetaScreen : MonoBehaviour {
         {
             NextScene();
         }
+
+        if(Input.GetKeyUp(KeyCode.B))
+        {
+            FadeToBlack(TempFaderBool);
+            TempFaderBool = !TempFaderBool;
+        }
     }
+
+    private void FadeToBlack(bool isAtBlack)
+    {
+        Debug.Log("Fading: " + isAtBlack);
+        BlackFader.SetBool("FadeTowardsBlack", isAtBlack);
+    }
+
 }
