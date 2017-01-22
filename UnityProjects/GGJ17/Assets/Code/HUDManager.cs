@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.UI;
 
 public class HUDManager : MonoBehaviour {
     [Header("UI Prefabs")]
     public GameObject guessUIPrefab;
     public GameObject guessUIParent;
-    public GameObject coinUIPrefab;
+    public CoinUI coinUIPrefab;
     public Sprite coinUIFound;
     public Sprite coinUIHidden;
     public GameObject coinUIParent;
@@ -24,12 +25,24 @@ public class HUDManager : MonoBehaviour {
     public int boopsRemaining;
     public int guessesRemaining;
     private List<GameObject> guessUIList = new List<GameObject>();
-    private List<GameObject> coinUIList = new List<GameObject>();
+    private List<CoinUI> coinUIList = new List<CoinUI>();
 
     private void Start()
     {
         SpawnCraneUIs();
         SpawnCoinUIs();
+    }
+
+    public void GetNextCoin()
+    {
+        for (int i = coinUIList.Count - 1; i >= 0; i--)
+        {
+            if (coinUIList[i].Swapped == false)
+            {
+                coinUIList[i].Swap();
+                return;
+            }
+        }
     }
 
     /* UI Spawners */
@@ -50,13 +63,17 @@ public class HUDManager : MonoBehaviour {
         guessesRemaining = initialGuesses;
     }
 
-    private void SpawnCoinUIs()
+    public void SpawnCoinUIs()
     {
-        float coinPrefabHeight = coinUIPrefab.GetComponent<RectTransform>().rect.height;
+        for (int i = coinUIList.Count - 1; i >= 0; i--)
+            GameObject.Destroy(coinUIList[i].gameObject);
+        coinUIList.Clear();
+
+        float coinPrefabHeight = coinUIPrefab.gameObject.GetComponent<RectTransform>().rect.height;
         for (int i = 0; i < GameManager.current.GetCurrentLevelInfo().ChestsToComplete; i++)
         {
-            GameObject nextIcon = Instantiate(coinUIPrefab) as GameObject;
-            coinUIList.Add(nextIcon);
+            GameObject nextIcon = Instantiate(coinUIPrefab.gameObject) as GameObject;
+            coinUIList.Add( nextIcon.GetComponent<CoinUI>() );
             nextIcon.transform.SetParent(coinUIParent.transform, false);
 
             float newX = (transform.parent.localPosition.x + coinXOffset) - (coinXOffset + coinPrefabHeight) * i;
@@ -136,6 +153,7 @@ public class HUDManager : MonoBehaviour {
             if (guessesRemaining == 0)
             {
                 Debug.Log("Game over");
+                GameManager.current.RestartLevel();
             }
         }
     }

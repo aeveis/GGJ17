@@ -115,6 +115,7 @@ public class GameManager : MonoBehaviour {
         SetFadeState(true);
         CommFX.CleanUpCranePool();
         HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
+        HUDManager.SpawnCoinUIs();
         yield return new WaitForSeconds(1f);
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
@@ -128,12 +129,12 @@ public class GameManager : MonoBehaviour {
     IEnumerator AdvanceLevelCoroutine()
     {
         //TODO: End of Level Show
+        yield return new WaitForSeconds(1f);
         SetFadeState(true);
         CompleteScreen.SetShow(true);
         OnLevelSuccess.Invoke();
         CommFX.CleanUpCranePool();
         HUDManager.AddUpToCraneUIs(GetCurrentLevelInfo().InitialCranes);
-
         //move obstacles so on trigger exit is called - Dan
         var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
         for(int i = 0;i<obstacles.Length;i++)
@@ -146,6 +147,7 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(2f);
         CompleteScreen.SetShow(false);
         SetFadeState(false);
+        HUDManager.SpawnCoinUIs();
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
         SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         TreasureCollected = 0;
@@ -189,6 +191,7 @@ public class GameManager : MonoBehaviour {
     {
         Debug.Log("Treasure collected!");
         TreasureCollected += 1;
+        HUDManager.GetNextCoin();
         CheckIfLevelComplete();
     }
 
