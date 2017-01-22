@@ -192,11 +192,16 @@ public class GameManager : MonoBehaviour {
 
     }
 
-    public void TogglePauseMenu()
+    public void SetPauseMenu(bool visible)
     {
-        isInMenuOverlay = !isInMenuOverlay;
+        isInMenuOverlay = visible;
         if (isInMenuOverlay) { PauseScreen.SetActive(true); }
         else { PauseScreen.SetActive(false); }
+    }
+
+    public void TogglePauseMenu()
+    {
+        SetPauseMenu(!isInMenuOverlay);
     }
 
     private void Update()
