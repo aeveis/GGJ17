@@ -4,32 +4,36 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Events;
 
+[System.Serializable]
+public class LevelInfo
+{
+    public string LevelID = "Enter Scene Name Here.";
+    public int ChestsToComplete = 1;
+}
+
 public class MetaScreen : MonoBehaviour {
     public static MetaScreen current;
 
+    [Header("Managers")]
     public SubSpawn SubSpawner;
     public BoidField BoidSpawner;
+    public AmmoManager HUDManager;
 
     [Header("All Levels Info")]
-    public int lastUnlockedLevel;
-    public List<string> allLevels;
+    public List<LevelInfo> LevelList;
 
     [Header("Current Level Info")]
-    public int currentLevel = 0;
-    public bool currentLevelComplete = false;
-    public List<Treasure> allCurrentTreasure = new List<Treasure>();
-    public int currentTreasureCollected = 0;
+    public int CurrentLevel = 0;
+    public bool CurrentLevelComplete = false;
+
+    public int TreasureCollected = 0;
 
     [Header("Menu Screens")]
     public GameObject PauseScreen;
-    public GameObject ControlsScreen;
-    public GameObject LevelSelectScreen;
 
-    public Animator BlackFader;
-    public bool TempFaderBool = false;
+    public Animator Fader;
 
     [Header("Menu Bools")]
-    public bool isPaused = false;
     private bool isInMenuOverlay = false;
 
     private void Awake()
@@ -37,22 +41,26 @@ public class MetaScreen : MonoBehaviour {
         current = this;
         PauseScreen.SetActive(false);
         BoidSpawner.Generate();
-        SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
+    }
+
+    public LevelInfo GetCurrentLevelInfo()
+    {
+        return LevelList[CurrentLevel];
     }
 
     private void Start()
     {
+        SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
         SubSpawner.SpawnSubAt(Vector3.zero);
     }
 
-    private void NextScene()
+    private void AdvanceLevel()
     {
-        if (currentLevel < allLevels.Count - 1)
+        if (CurrentLevel < LevelList.Count - 1)
         {
-            isPaused = true;
-            currentLevel++;
-            SceneManager.UnloadSceneAsync(allLevels[currentLevel - 1]);
-            SceneManager.LoadScene(allLevels[currentLevel], mode: LoadSceneMode.Additive);
+            CurrentLevel++;
+            SceneManager.UnloadSceneAsync(LevelList[CurrentLevel - 1].LevelID);
+            SceneManager.LoadScene(LevelList[CurrentLevel].LevelID, mode: LoadSceneMode.Additive);
             SubSpawner.ResetSub();
         }
         else
@@ -73,42 +81,30 @@ public class MetaScreen : MonoBehaviour {
 
         if(Input.GetKeyUp(KeyCode.A))
         {
-            NextScene();
-        }
-
-        if(Input.GetKeyUp(KeyCode.B))
-        {
-            FadeToBlack(TempFaderBool);
-            TempFaderBool = !TempFaderBool;
+            AdvanceLevel();
         }
     }
 
-    public void AddThisChest (Treasure thisTreasure)
-    {
-        allCurrentTreasure.Add(thisTreasure);
-    }
-
-    public void CollectATreasure (Treasure thisTreasure)
+    public void CollectATreasure ()
     {
         Debug.Log("Treasure collected!");
-        thisTreasure.SetTreasureCollected();
-        currentTreasureCollected += 1;
+        TreasureCollected += 1;
         CheckIfLevelComplete();
     }
 
     public void CheckIfLevelComplete ()
     {
-        if(currentTreasureCollected >= allCurrentTreasure.Count)
+        if(TreasureCollected >= GetCurrentLevelInfo().ChestsToComplete)
         {
             Debug.Log("You won the level!");
-            NextScene();
+            AdvanceLevel();
         }
     }
 
     private void FadeToBlack(bool isAtBlack)
     {
         Debug.Log("Fading: " + isAtBlack);
-        BlackFader.SetBool("FadeTowardsBlack", isAtBlack);
+        Fader.SetBool("FadeTowardsBlack", isAtBlack);
     }
 
     public void QuitAnimation ()

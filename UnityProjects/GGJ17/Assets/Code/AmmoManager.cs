@@ -52,7 +52,7 @@ public class AmmoManager : MonoBehaviour {
     private void SpawnCoinUIs()
     {
         float coinPrefabHeight = coinUIPrefab.GetComponent<RectTransform>().rect.height;
-        for (int i = 0; i < MetaScreen.current.allCurrentTreasure.Count; i++)
+        for (int i = 0; i < MetaScreen.current.GetCurrentLevelInfo().ChestsToComplete; i++)
         {
             GameObject nextIcon = Instantiate(coinUIPrefab) as GameObject;
             coinUIList.Add(nextIcon);
@@ -68,8 +68,9 @@ public class AmmoManager : MonoBehaviour {
     /* Update */
     private void Update()
     {
-        if (Input.GetMouseButtonUp(1) && !(MetaScreen.current.isPaused))
+        if (Input.GetMouseButtonUp(1))
         {
+            Debug.Log("Got Click Up.");
             if(guessUIList.Count > 0)
             {
                 Debug.Log("Fire!");

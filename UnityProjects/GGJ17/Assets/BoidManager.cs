@@ -22,7 +22,7 @@ public class BoidManager : MonoBehaviour
 
     public void TreasurePinged(int boopID)
     {
-        Debug.Log("Treausre is Pinged!");
+        //Debug.Log("Treausre is Pinged!");
         OnTreasurePinged.Invoke(boopID);
     }
 }
