@@ -96,7 +96,16 @@ public class GameManager : MonoBehaviour {
             LevelCompleteParticles.Play();
             SetFadeState(true);
             GameWinScreen.SetShow(true);
+            StartCoroutine(ResetGameAfterYouBeatIt());
         }
+    }
+
+    private IEnumerator ResetGameAfterYouBeatIt()
+    {
+        yield return new WaitForSeconds(3f);
+        GameWinScreen.SetShow(false);
+        CurrentLevel--;
+        ResetGame();
     }
 
     public bool ResetLevel()
