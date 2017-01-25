@@ -142,6 +142,16 @@ public class GameManager : MonoBehaviour {
         yield return new WaitForSeconds(1f);
         SetFadeState(true);
         yield return new WaitForSeconds(1f);
+
+        //move obstacles so on trigger exit is called - Dan
+        var obstacles = GameObject.FindObjectsOfType<BoidRemover>();
+        for (int i = 0; i < obstacles.Length; i++)
+        {
+            // Debug.Log("obstacles: " + obstacles[i]);
+            obstacles[i].gameObject.transform.position = Vector3.one * -5f;
+        }
+        yield return null;
+
         SceneManager.UnloadSceneAsync(LevelList[CurrentLevel].LevelID);
         CurrentLevel = 0;
         SceneManager.LoadScene(LevelList[0].LevelID, mode: LoadSceneMode.Additive);
